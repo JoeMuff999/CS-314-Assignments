@@ -15,6 +15,7 @@
  *  Number of slip days used on this assignment:
  */
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class CodeCamp {
@@ -68,9 +69,14 @@ public class CodeCamp {
             throw new IllegalArgumentException("Violation of precondition: " +
             		"isPermutation. neither parameter may equal null.");
         /*CS314 STUDENTS: INSERT YOUR CODE HERE*/
-        
-        return true; //must change
+        if (listA.length != listB.length)
+        	return false;
+        return true;
+       
     }
+    
+     
+
     
     
     /**
@@ -99,9 +105,47 @@ public class CodeCamp {
 
         // CS314 STUDENTS: ADD YOUR CODE HERE
         //  You can use all methods from the String class and native arrays.
+        
+        int largestIndex, localVowelCount, globalMaxVowelCount;
+        localVowelCount = globalMaxVowelCount = 0;
+        largestIndex = Integer.MAX_VALUE;
+        
+        for (int index  = 0; index < list.length; index++)
+        {
+        	if(list[index] == null)
+        		continue; 
+        	/* Makes the string lowercase then uses checkVowel helper method to check each character */
+        	String stringToParse = list[index].toLowerCase();
+        	for(int charIndex = 0; charIndex < stringToParse.length(); charIndex++)
+        	{
+        		if(isVowel(stringToParse.charAt(charIndex)))
+        			localVowelCount++;
+        	}
+        	/*Essentially greedy (?) algorithm. If a word has more vowels than the previous = new max */
+        	if(localVowelCount > globalMaxVowelCount)
+        	{
+        		largestIndex = index;
+        		globalMaxVowelCount = localVowelCount;
+        		localVowelCount = 0;
+        	}
+        	/* If vowel count is 0, returns the closest non-null index to 0 */
+        	if(globalMaxVowelCount == 0)
+        	{
+        		if(index < largestIndex)
+        			largestIndex = index;
+        	}
+        }
 
-
-        return -1; //must change
+        return largestIndex; 
+    }
+    
+    /* Helper method to check if a character "charToCheck" is a vowel (returns a boolean) */
+    private static boolean isVowel(char charToCheck)
+    {	
+    	
+    	if (charToCheck == 'a' || charToCheck == 'i' || charToCheck == 'e'|| charToCheck == 'o'|| charToCheck == 'u')
+    		return true;
+    	return false;
     }
     
 
@@ -128,6 +172,7 @@ public class CodeCamp {
         
         //CS314 STUDENTS: ADD YOUR CODE HERE
 
+        
         return -1; //must change
     }
     
@@ -158,8 +203,47 @@ public class CodeCamp {
             		"and may only contain 'q's and '.'s");        
                 
       //CS314 STUDENTS: ADD YOUR CODE HERE
-
-        return false; //must change
+        int[][] queenStorage = new int[board.length][2];
+        //initializes queenStorage with MAX_VALUE.    
+        for (int[] row : queenStorage)
+        {
+        	Arrays.fill(row, Integer.MAX_VALUE);
+        }
+        //If q, add to queenStorage. Also checks for queens on the same row
+        for (int row = 0; row < board.length; row++)
+        {
+        	for (int col = 0; col < board[0].length; col++)
+        	{
+        		if (board[row][col] == 'q')
+        		{
+        			if(queenStorage[row][0] != Integer.MAX_VALUE)
+        			{
+        				//checking for horizontal matches
+        				return false;
+        			}
+        			queenStorage[row][0] = row;
+        			queenStorage[row][1] = col;
+        		}
+        	}
+        }
+        //queenStorage looks like -> queen row = queenStorage[row][0] and col = queenStorage[row][1]
+        /* Starts from the queen with lowest row val and checks diags and verts for each queen below it */
+        for (int row = 0; row < queenStorage.length; row++)
+        {
+        	if(queenStorage[row][0]== Integer.MAX_VALUE)
+    			continue;//some queen storages never get changed because a row doesn't have a queen so skip
+        	for (int below = row+1; below < queenStorage.length; below++)
+        	{
+        		if(queenStorage[below][0]== Integer.MAX_VALUE)
+        			continue;// see comment above
+        		//check diagonals and verticals
+        		int rowDiff = Math.abs(queenStorage[row][0] - queenStorage[below][0]);
+        		int colDiff = Math.abs(queenStorage[row][1] - queenStorage[below][1]);
+        		if (rowDiff == colDiff || colDiff == 0)
+        			return false;        		
+        	}
+        }
+        return true; // if input survives above checks, return true
     }
     
     
