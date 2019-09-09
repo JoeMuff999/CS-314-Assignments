@@ -69,9 +69,38 @@ public class CodeCamp {
             throw new IllegalArgumentException("Violation of precondition: " +
             		"isPermutation. neither parameter may equal null.");
         /*CS314 STUDENTS: INSERT YOUR CODE HERE*/
+        
+        //if not the same length, not permutation
         if (listA.length != listB.length)
         	return false;
-        return true;
+        
+        int[] usedIndices = new int[listA.length];
+        int matches = 0;
+                
+        for(int i = 0; i < listA.length; i++)
+        {
+        	//if listB[j] has been matched with listA[i], skip this number so no repeat indices are used
+        	loopToContinue:
+        	for(int j = 0; j < listB.length; j++)
+        	{        		
+        		if(listA[i] == listB[j])
+        		{
+        			for(int k = 0; k < matches; k++)
+        			{
+        				if(j == usedIndices[k])
+        					continue loopToContinue;
+        			}
+        			usedIndices[matches] = j;
+        			matches++;
+        		}
+        	}
+        	if(matches == listA.length)
+        	{
+        		return true;
+        	}
+        }
+        
+        return matches == listA.length;
        
     }
     
@@ -171,9 +200,55 @@ public class CodeCamp {
                     ", numDaysInYear: " + numDaysInYear);
         
         //CS314 STUDENTS: ADD YOUR CODE HERE
-
         
-        return -1; //must change
+        //generating randoms
+        int days = numDaysInYear;
+        int[] people = new int[numPeople];
+
+        int numPairs = 0;
+        for(int i = 0; i < people.length; i++)
+        {
+        	people[i] = (int)(Math.random()*days);
+        	for(int j = i-1; j >= 0; j--)
+        	{
+        		if(people[i]==people[j])
+        			numPairs++;
+        	}
+        }
+        
+        return numPairs;
+    }
+    /* runs the first birthday experiment and outputs the average number of pairs */
+    public static int birthdayExperimentOne()
+    {
+    	//1,000,000 experiments, 365 days per year, 182 people per experiment
+    	int sum = 0;
+    	
+    	for(int i = 0; i < 1000000; i++)
+    		sum += sharedBirthdays(182,365);
+    	
+    	return sum/1000000;
+    }
+    /*runs the second birthday experiment and outputs a string formated based on the assignment webpage. Includes num of experiments with one or more shared birthday + percentage */
+    public static String birthdayExperimentTwo()
+    {
+    	String output = "";
+    	double sharedBirthdaysCount, percentBirthday;
+    	sharedBirthdaysCount = percentBirthday = 0;
+    	for(int i = 2; i <= 100; i++)
+    	{
+    		for(int j = 0; j < 50000; j++)
+    		{
+    			if(sharedBirthdays(i,365)>0)
+    				sharedBirthdaysCount++;
+    		}
+    		
+    		percentBirthday = sharedBirthdaysCount/50000 *100;
+    		output+= "\n" + "Num people: " + i + ", number of experiments with one or more shared birthday: " + (int)sharedBirthdaysCount + ", percentage: " + percentBirthday;
+    		sharedBirthdaysCount = percentBirthday = 0;
+    	}
+    	
+    	return output;
     }
     
     
