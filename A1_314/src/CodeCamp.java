@@ -8,15 +8,12 @@
  *  and I have not provided this code to any other student.
  *
  *  Name: Joey Muffoletto
- *  email address:
- *  UTEID:
- *  Section 5 digit ID: 
- *  Grader name:
- *  Number of slip days used on this assignment:
+ *  email address: jrmuff@utexas.edu
+ *  UTEID: jrm7925
+ *  Section 5 digit ID: 50220 
+ *  Grader name: Andrew
+ *  Number of slip days used on this assignment: 0
  */
-
-import java.util.Arrays;
-import java.util.Random;
 
 public class CodeCamp {
   
@@ -155,8 +152,8 @@ public class CodeCamp {
         	{
         		largestIndex = index;
         		globalMaxVowelCount = localVowelCount;
-        		localVowelCount = 0;
         	}
+    		localVowelCount = 0;
         	/* If vowel count is 0, returns the closest non-null index to 0 */
         	if(globalMaxVowelCount == 0)
         	{
@@ -169,6 +166,7 @@ public class CodeCamp {
     }
     
     /* Helper method to check if a character "charToCheck" is a vowel (returns a boolean) */
+    //charToCheck cannot be null, but this is taken care of in method above
     private static boolean isVowel(char charToCheck)
     {	
     	
@@ -201,16 +199,17 @@ public class CodeCamp {
         
         //CS314 STUDENTS: ADD YOUR CODE HERE
         
-        //generating randoms
         int days = numDaysInYear;
         int[] people = new int[numPeople];
-
+        
         int numPairs = 0;
         for(int i = 0; i < people.length; i++)
         {
+        	//generating randoms
         	people[i] = (int)(Math.random()*days);
         	for(int j = i-1; j >= 0; j--)
         	{
+        		/* adds a person, then checks everyone already in array for pair */
         		if(people[i]==people[j])
         			numPairs++;
         	}
@@ -218,38 +217,7 @@ public class CodeCamp {
         
         return numPairs;
     }
-    /* runs the first birthday experiment and outputs the average number of pairs */
-    public static int birthdayExperimentOne()
-    {
-    	//1,000,000 experiments, 365 days per year, 182 people per experiment
-    	int sum = 0;
-    	
-    	for(int i = 0; i < 1000000; i++)
-    		sum += sharedBirthdays(182,365);
-    	
-    	return sum/1000000;
-    }
-    /*runs the second birthday experiment and outputs a string formated based on the assignment webpage. Includes num of experiments with one or more shared birthday + percentage */
-    public static String birthdayExperimentTwo()
-    {
-    	String output = "";
-    	double sharedBirthdaysCount, percentBirthday;
-    	sharedBirthdaysCount = percentBirthday = 0;
-    	for(int i = 2; i <= 100; i++)
-    	{
-    		for(int j = 0; j < 50000; j++)
-    		{
-    			if(sharedBirthdays(i,365)>0)
-    				sharedBirthdaysCount++;
-    		}
-    		
-    		percentBirthday = sharedBirthdaysCount/50000 *100;
-    		output+= "\n" + "Num people: " + i + ", number of experiments with one or more shared birthday: " + (int)sharedBirthdaysCount + ", percentage: " + percentBirthday;
-    		sharedBirthdaysCount = percentBirthday = 0;
-    	}
-    	
-    	return output;
-    }
+ 
     
     
     /**
@@ -282,7 +250,8 @@ public class CodeCamp {
         //initializes queenStorage with MAX_VALUE.    
         for (int[] row : queenStorage)
         {
-        	Arrays.fill(row, Integer.MAX_VALUE);
+        	row[0] = Integer.MAX_VALUE;
+        	row[1] = Integer.MAX_VALUE;
         }
         //If q, add to queenStorage. Also checks for queens on the same row
         for (int row = 0; row < board.length; row++)
@@ -347,13 +316,112 @@ public class CodeCamp {
 
         //CS314 STUDENTS: ADD YOUR CODE HERE
 
-        return -1; //must change
+        //n rows, n columns, n size, n positions
+        
+        int maxSum = Integer.MIN_VALUE;
+        // run through each coordinate in city
+        for(int i = 0; i < city.length; i++)
+        {
+        	for(int j = 0; j < city[0].length; j++)
+        	{
+        		//each coordinate is a starting point
+        		maxSum = Math.max(expandRowThenColumn(i,j,city), maxSum);
+        		maxSum = Math.max(expandColumnThenRow(i,j,city), maxSum);
+        		
+        	}
+        }
+        return maxSum; //must change
     }
+    
+    /* Takes the starting coordinate in city/grid, calculates the max value from that 
+     * starting position by expanding downward 1 tile then expanding rightwards to rowlength-1.
+     * Expands downwards then checks rightward until the row number is columnlength -1
+     * Returns the highest value grid it found
+     * pre: rowStart and colStart > 0, city != null. Already checked by method which calls it.
+     */
+    private static int expandRowThenColumn(int rowStart, int colStart, int[][] city)
+    {
+    	int methodMax = Integer.MIN_VALUE;
+    	//used to store the value of the previous column up to the row number (row number is the index)
+    	int[] sumOfPriorColumnAtRow = new int[city.length-rowStart];
+    	
+    	for(int col = colStart; col < city[0].length; col++)
+    	{
+    		int current = 0;
+    		for(int row = rowStart; row < city.length; row++)
+        	{    			
+    			current+=city[row][col];
+    			methodMax = Math.max(current+sumOfPriorColumnAtRow[row-rowStart], methodMax);
+    			sumOfPriorColumnAtRow[row-rowStart]+= current;    		 	
+        	}
+    		
+    	}
+    	return methodMax;
+    }
+    /* Takes the starting coordinate in city/grid, calculates the max value from that 
+     * starting position by expanding rightward 1 tile then expanding downwards to columnLength-1.
+     * Expands rightward and checks below until the column number is rowLength -1
+     * Returns the highest value grid it found
+     * pre: rowStart and colStart > 0, city != null. Already checked by method which calls it.
+     */
+    private static int expandColumnThenRow(int rowStart, int colStart, int[][] city)
+    {
+    	int methodMax = Integer.MIN_VALUE;
+    	//used to store the value of the previous row up to the column number (col number is index)
+    	int[] sumOfPriorRowAtColumn = new int[city[0].length-colStart];
+    	
+    	for(int row = rowStart; row < city.length; row++)
+    	{    		
+        	int current = 0;
+    		for(int col = colStart; col < city[0].length; col++)
+    		{
+    			current+=city[row][col];
+    			methodMax = Math.max(current+sumOfPriorRowAtColumn[col-colStart], methodMax);
+    			sumOfPriorRowAtColumn[col-colStart]+= current;    
+    		}    		 
+    	}
+    	return methodMax;
+    }
+
+    	
     
     
     // !!!!! ***** !!!!! ***** !!!!! ****** !!!!! ****** !!!!! ****** !!!!!!
     // CS314 STUDENTS: Put your birthday problem experiement code here:
     
+    /* runs the first birthday experiment and outputs the average number of pairs */
+    public static int birthdayExperimentOne()
+    {
+    	//1,000,000 experiments, 365 days per year, 182 people per experiment
+    	int sum = 0;
+    	
+    	for(int i = 0; i < 1000000; i++)
+    		sum += sharedBirthdays(182,365);
+    	
+    	return sum/1000000;
+    }
+    /*runs the second birthday experiment and outputs a string formated based on the assignment webpage. 
+     * Includes num of experiments with one or more shared birthday + percentage */
+    public static String birthdayExperimentTwo()
+    {
+    	String output = "";
+    	double sharedBirthdaysCount, percentBirthday;
+    	sharedBirthdaysCount = percentBirthday = 0;
+    	for(int i = 2; i <= 100; i++)
+    	{
+    		for(int j = 0; j < 50000; j++)
+    		{
+    			if(sharedBirthdays(i,365)>0)
+    				sharedBirthdaysCount++;
+    		}
+    		
+    		percentBirthday = sharedBirthdaysCount/50000 *100;
+    		output+= "\n" + "Num people: " + i + ", number of experiments with one or more shared birthday: " + (int)sharedBirthdaysCount + ", percentage: " + percentBirthday;
+    		sharedBirthdaysCount = percentBirthday = 0;
+    	}
+    	
+    	return output;
+    }
     
     // pre: list != null
     // post: return true if at least one element in list is null
