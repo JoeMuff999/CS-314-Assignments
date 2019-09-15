@@ -326,15 +326,10 @@ public class MathMatrix {
         
 		 for(int row = 0; row < getNumRows(); row++)
 		 {
-
-		 	if(getVal(row,row) == 0)
-		 		return false;	 		
-
 		 	for(int col = 0; col < row; col ++)
 		 	{
 		 		if(getVal(row,col) != 0)
-		 		{
-		 			
+		 		{	 			
 		 			return false;
 		 		}
 		 	}

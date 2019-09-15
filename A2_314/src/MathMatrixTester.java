@@ -83,9 +83,9 @@ public class MathMatrixTester {
             mat1 = new MathMatrix(data1);
             String expected = "|    10   100   101 -1000|\n|  1000    10    55     4|\n|     1    -1     4     0|\n";
             if (mat1.toString().equals( expected )) {
-                System.out.println("passed test 8, toString method.");
+                System.out.println("Passed test 8, toString method.");
             } else {
-                System.out.println("failed test 8, toString method.");
+                System.out.println("Failed test 8, toString method.");
             }
 
             //test 9, upperTriangular
@@ -104,6 +104,23 @@ public class MathMatrixTester {
                 System.out.println("Passed test 10, upperTriangular method.");
             } else {
                 System.out.println("Failed test 10, upperTriangular method.");   
+            }
+            
+            data1 = new int[][] {{0}};
+            mat1 = new MathMatrix(data1);
+            if (mat1.isUpperTriangular()) {
+                System.out.println("Passed test 11, upperTriangular 1 by 1.");
+            } else {
+                System.out.println("Failed test 11, upperTriangular 1 by 1.");   
+            }
+            
+          //test 10, upperTriangular
+            data1 = new int[][] {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+            mat1 = new MathMatrix(data1);
+            if (mat1.isUpperTriangular()) {
+                System.out.println("Passed test 12, upperTriangular 0 matrix.");
+            } else {
+                System.out.println("Failed test 12, upperTriangular 0 matrix.");   
             }
 
             // test 11 - 14, mutliply stress test (possible to get Answer by Accident)
