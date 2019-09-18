@@ -111,6 +111,7 @@ public class MathMatrix
 		if (row < 0 || col < 0 || row >= getNumRows() || col >= getNumColumns())
 			throw new IllegalArgumentException("Violation of precondition: "
 					+ "getVal(int row, int col). param row and param col must >= 0 && row < getNumRows() && col < getNumColumns()");
+					
 		return values[row][col];
 	}
 
@@ -202,15 +203,15 @@ public class MathMatrix
 
 		MathMatrix matrixToReturn = new MathMatrix(getNumRows(), rightHandSide.getNumColumns(), 0);
 
-		int depth = this.getNumColumns();
+		int maxDepth = this.getNumColumns();
 
 		for (int row = 0; row < matrixToReturn.values.length; row++)
 		{
 			for (int col = 0; col < matrixToReturn.values[0].length; col++)
 			{
-				for (int z = 0; z < depth; z++)
+				for (int depth = 0; depth < maxDepth; depth++)
 				{
-					matrixToReturn.values[row][col] += values[row][z] * rightHandSide.getVal(z, col);
+					matrixToReturn.values[row][col] += values[row][depth] * rightHandSide.getVal(depth, col);
 				}
 			}
 		}
@@ -289,15 +290,20 @@ public class MathMatrix
 			// rightHandSide is a non null MathMatrix
 			MathMatrix otherMatrix = (MathMatrix) rightHandSide;
 
-			// complete the method, delete this comment
 			if (otherMatrix.getNumColumns() != this.getNumColumns() || otherMatrix.getNumRows() != this.getNumRows())
 				return false;
 
 			for (int row = 0; row < getNumRows(); row++)
+			{
 				for (int col = 0; col < getNumColumns(); col++)
+				{
 					if (otherMatrix.getVal(row, col) != getVal(row, col))
-						;
-			return false;
+					{						
+						return false;
+					}					
+				}				
+			}
+				
 		}
 		return true;
 	}
