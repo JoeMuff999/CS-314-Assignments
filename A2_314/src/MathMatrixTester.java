@@ -34,7 +34,7 @@ import java.util.Random;
  *      
  * 3. I expect it would take about 3723 seconds.
  * 
- * 4. The big O of my mulitply operation should be O(N^3). This is because, for each element of the matrix (NxN), it another N times. Therefore, it should be 
+ * 4. The big O of my multiply operation should be O(N^3). This is because, for each element of the matrix (NxN), it another N times. Therefore, it should be 
  *  rowCount*colCount*depth or NxNxN (since all are N in this situation). The timing data does not support this. This is because as N doubles, the runtime increases
  * by a factor of around 14, whereas in an O(N^3) algorithm the runtime should increase by a factor of 8.
  * 

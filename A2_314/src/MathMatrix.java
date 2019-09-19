@@ -342,9 +342,9 @@ public class MathMatrix
         {
             for (int col = 0; col < getNumColumns(); col++)
             {
-                String s = "" + getVal(row, col);
-                if (s.length() > maxLength)
-                    maxLength = s.length();
+                String currentString = "" + getVal(row, col);
+                if (currentString.length() > maxLength)
+                    maxLength = currentString.length();
 
             }
         }
