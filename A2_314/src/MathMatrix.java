@@ -206,9 +206,7 @@ public class MathMatrix
         }
 
         MathMatrix matrixToReturn = new MathMatrix(getNumRows(), rightHandSide.getNumColumns(), 0);
-        // the amount of multiplications per row of the first matrix is based on the
-        // columns of the first matrix
-        int maxDepth = this.getNumColumns();
+
         // runs through each element in the empty matrix. Sets each element as it goes
         // through the matrix.
         for (int row = 0; row < matrixToReturn.values.length; row++)
@@ -218,7 +216,7 @@ public class MathMatrix
                 // In matrix multiplication, its row*col. the amount of multiplications per row
                 // of the first matrix is based on the amount of columns in the first matrix.
                 // I use this depth loop to perform those multiplications.
-                for (int depth = 0; depth < maxDepth; depth++)
+                for (int depth = 0; depth < this.getNumColumns(); depth++)
                 {
                     matrixToReturn.values[row][col] += values[row][depth] * rightHandSide.getVal(depth, col);
                 }
