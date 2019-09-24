@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class NameRecord
+public class NameRecord implements Comparable<NameRecord>
 {
     private String name;
     private int baseDecade;
@@ -59,7 +59,7 @@ public class NameRecord
     {
         int bestYear = 0;
         int bestRank = rankByDecade.get(0);
-        for(int i = 1; i < rankByDecade.size(); i++)
+        for(int i = 0; i < rankByDecade.size(); i++) //have to include 0 for the way my bestYear works
         {
             if(bestRank >= rankByDecade.get(i))
             {
@@ -164,6 +164,20 @@ public class NameRecord
             stringToReturn.append("" + year + ": " + rank + "\n");
         }
         return stringToReturn.toString();
+    }
+    
+    /* returns whether this.name is ranked above or below String other alphabetically
+     * in the form of smaller = (returns int < 0), equal = (returns int = 0), 
+     * greater = (returns int > 0)
+     * Uses compareToIgnoreCase() in order to ignore the case of the name as dictated by the instructions
+     * pre: Names other != null
+     */
+    public int compareTo(NameRecord other)
+    {
+        if (other == null)
+            throw new IllegalArgumentException("The parameter NameRecord cannot be null");
+        
+        return this.name.compareToIgnoreCase(other.name); //using String's implementation of compareTo
     }
     
 }

@@ -9,6 +9,8 @@
 */
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -16,7 +18,7 @@ import java.util.Scanner;
 * Stores NameRecord objects and provides methods to select
 * NameRecords based on various criteria.
 */
-public class Names
+public class Names 
 {
 
     private ArrayList<NameRecord> names;
@@ -34,7 +36,37 @@ public class Names
      */
     public Names(Scanner sc)
     {
-       
+        //don't know if this is necessary, but just to be safe.
+        if (sc == null)
+            throw new IllegalArgumentException(
+                    "Illegal Argument Exception in constructor Names(Scanner)" + "Scanner sc must not be null");
+        int baseDecade = Integer.parseInt(sc.nextLine());
+        int numDecades = Integer.parseInt(sc.nextLine());
+        names = new ArrayList<>();
+        while (sc.hasNextLine())
+        {           
+            String currentLine = sc.nextLine();
+            String[] splitData = currentLine.split("\\s+");
+            boolean notAllZero = false; //checking if all ranks are zero
+            if (splitData.length-1 == numDecades)
+            {
+                String name = splitData[0];
+                ArrayList<Integer> rankByDecade = new ArrayList<>();
+                for (int i = 1; i < splitData.length; i++)
+                {
+                    if (Integer.parseInt(splitData[i]) != 0 && !notAllZero)
+                    {                        
+                        notAllZero = true;
+                    }
+                    rankByDecade.add(Integer.parseInt(splitData[i]));
+                }
+                if (notAllZero)
+                {
+                    names.add(new NameRecord(name, baseDecade, rankByDecade));
+                }
+            }
+        }
+        
     }
 
     /**
@@ -48,7 +80,20 @@ public class Names
     */
     public ArrayList<NameRecord> getMatches(String partialName)
     {
-
+        if (partialName == null || partialName.length() <= 0)
+            throw new IllegalArgumentException("Illegal Argument Exception in method"
+                    + "getMatches(String). String partialName may not be null or of <= 0 length");
+        
+        ArrayList<NameRecord> listOfPartialNames = new ArrayList<>();
+        for(int i = 0; i < names.size(); i++)
+        {
+            if(names.get(i).getName().toLowerCase().indexOf(partialName.toLowerCase()) != -1)
+            {
+                listOfPartialNames.add(names.get(i));
+            }
+        }
+        Collections.sort(listOfPartialNames);
+        return listOfPartialNames;
     }
 
     /**
@@ -63,7 +108,18 @@ public class Names
 
     public ArrayList<String> rankedEveryDecade()
     {
-
+        ArrayList<String> listOfRankedEveryDecade = new ArrayList<>();
+        
+        for(int i = 0; i < names.size(); i++)
+        {
+            if(names.get(i).isRankedAllDecades())
+            {
+                listOfRankedEveryDecade.add(names.get(i).getName());
+            }
+        }
+        
+        Collections.sort(listOfRankedEveryDecade);
+        return listOfRankedEveryDecade;
     }
 
     /**
@@ -77,7 +133,19 @@ public class Names
     */
     public ArrayList<String> rankedOnlyOneDecade()
     {
-
+        ArrayList<String> listOfRankedOnlyOneDecade = new ArrayList<>();
+        
+        for(int i = 0; i < names.size(); i++)
+        {
+            if(names.get(i).isRankedOnlyOneDecade())
+            {
+                listOfRankedOnlyOneDecade.add(names.get(i).getName());
+            }
+        }
+        
+        Collections.sort(listOfRankedOnlyOneDecade);
+        
+        return listOfRankedOnlyOneDecade;
     }
 
     /**
@@ -90,7 +158,19 @@ public class Names
     */
     public ArrayList<String> alwaysMorePopular()
     {
-
+        ArrayList<String> listOfAlwaysMorePopular = new ArrayList<>();
+        
+        for(int i = 0; i < names.size(); i++)
+        {
+            if(names.get(i).isPopularityAlwaysIncreasing())
+            {
+                listOfAlwaysMorePopular.add(names.get(i).getName());
+            }
+        }
+        
+        Collections.sort(listOfAlwaysMorePopular);
+        
+        return listOfAlwaysMorePopular;
     }
 
     /**
@@ -103,7 +183,19 @@ public class Names
     */
     public ArrayList<String> alwaysLessPopular()
     {
-
+        ArrayList<String> listOfAlwaysLessPopular = new ArrayList<>();
+        
+        for(int i = 0; i < names.size(); i++)
+        {
+            if(names.get(i).isPopularityAlwaysDecreasing())
+            {
+                listOfAlwaysLessPopular.add(names.get(i).getName());
+            }
+        }
+        
+        Collections.sort(listOfAlwaysLessPopular);
+        
+        return listOfAlwaysLessPopular;
     }
 
     /**
@@ -118,5 +210,17 @@ public class Names
     {
         if (name == null)
             throw new IllegalArgumentException("The parameter name cannot be null");
+        
+        for(int i = 0; i < names.size(); i++)
+        {
+            if(names.get(i).getName().toLowerCase().equals(name.toLowerCase()))
+            {
+                return names.get(i);
+            }
+        }
+        
+        return null;
     }
+    
+    
 }

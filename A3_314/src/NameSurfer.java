@@ -38,32 +38,36 @@ public class NameSurfer
     // CS314 students, add test code for NameRecord class here:
 
     // A few simple tests for the Names and NameRecord class.
-    public static void simpleTest() {
+    public static void simpleTest()
+    {
         // raw data for Jake. Alter as necessary for your NameRecord
-        Integer[] jakeRawData = new Integer[] {262,312,323,479,484,630,751,453,225,117,97};
+        Integer[] jakeRawData = new Integer[] { 262, 312, 323, 479, 484, 630, 751, 453, 225, 117, 97 };
         List<Integer> listJakeData = Arrays.asList(jakeRawData);
         ArrayList<Integer> jakeData = new ArrayList<>();
         jakeData.addAll(listJakeData);
-        
+
         int baseDecade = 1900;
         NameRecord jakeRecord = new NameRecord("Jake", baseDecade, jakeData); // complete with your constructor
-                String expected = "Jake\n1900: 262\n1910: 312\n1920: 323\n1930: 479\n1940: "
-                        + "484\n1950: 630\n1960: 751\n1970: 453\n1980: 225\n1990: 117\n2000: 97\n";
+        String expected = "Jake\n1900: 262\n1910: 312\n1920: 323\n1930: 479\n1940: "
+                + "484\n1950: 630\n1960: 751\n1970: 453\n1980: 225\n1990: 117\n2000: 97\n";
         String actual = jakeRecord.toString();
         System.out.println("expected string:\n" + expected);
         System.out.println("actual string:\n" + actual);
-        if (expected.equals(actual)) {
+        if (expected.equals(actual))
+        {
             System.out.println("passed Jake toString test.");
-        } else {
-            System.out.println("FAILED Jake toString test."); 
+        } else
+        {
+            System.out.println("FAILED Jake toString test.");
         }
 
         // Some getName Tests
 
         Names names = new Names(getFileScannerForNames(NAME_FILE));
-        String[] testNames = {"Isabelle", "isabelle", "sel", "X1178", "ZZ", "via", "kelly"};
-        boolean[] expectNull = {false, false, true, true, true, true, false};
-        for (int i = 0; i < testNames.length; i++) {
+        String[] testNames = { "Isabelle", "isabelle", "sel", "X1178", "ZZ", "via", "kelly" };
+        boolean[] expectNull = { false, false, true, true, true, true, false };
+        for (int i = 0; i < testNames.length; i++)
+        {
             performGetNameTest(names, testNames[i], expectNull[i]);
         }
     }
@@ -182,7 +186,17 @@ public class NameSurfer
         if (n == null || keyboard == null)
         {
             throw new IllegalArgumentException("The parameters cannot be null");
-
+        }
+        System.out.print("Enter a name: ");
+        String name = keyboard.next();
+        keyboard.nextLine(); //clear the buffer (ex: if they input "jake 1", the 1 will be registered for the next choice. bug not a feature in my opinion
+        if(n.getName(name) != null)
+        {
+            System.out.println("\n"+ n.getName(name).toString());
+        }
+        else
+        {
+            System.out.println("\nThere are 0 matches for "+ name);
         }
     }
 
@@ -197,8 +211,21 @@ public class NameSurfer
         if (n == null || keyboard == null)
         {
             throw new IllegalArgumentException("The parameters cannot be null");
-
         }
+        System.out.print("Enter a partial name: ");
+        String name = keyboard.next();
+        keyboard.nextLine(); //clear the buffer (ex: if they input "jake 1", the 1 will be registered for the next choice. bug not a feature in my opinion
+        ArrayList<NameRecord> matches = n.getMatches(name);
+        System.out.println("\nThere are " + n.getMatches(name).size() + " matches for " + name);
+        if(n.getMatches(name).size() != 0)
+        {
+            System.out.print("\nThe matches with their highest ranking decade are: \n");
+        }
+        for (int i = 0; i < n.getMatches(name).size(); i++)
+        {
+            System.out.println(matches.get(i).getName() + " " + matches.get(i).getBestDecade());
+        }
+
     }
 
     // get choice from the user
