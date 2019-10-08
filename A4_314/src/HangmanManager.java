@@ -199,7 +199,7 @@ public class HangmanManager {
         if(alreadyGuessed(guess))
             throw new IllegalStateException("makeGuess(char), param char already guessed!");
         guesses.add(guess);
-        TreeMap<String,Integer> result = new TreeMap<>();
+        
         Map<String, ArrayList<String>> currFam = new TreeMap<>();
         for(String word : activeWords)
         {
@@ -233,7 +233,7 @@ public class HangmanManager {
         {
             guessCount++;
         }
-        
+        TreeMap<String,Integer> result = new TreeMap<>();
         for(String key : currFam.keySet())
         {
             result.put(key,currFam.get(key).size());
@@ -244,7 +244,21 @@ public class HangmanManager {
         return result;
     }
     
-    private String getKeyOfDifficulty(Map<String, ArrayList<String>> currMap ,int difficulty)
+    private String getKeyOfDifficulty(Map<String, ArrayList<String>> currMap, int difficulty)
+    {
+    	List<patternObj> listToSort = new ArrayList<>();
+    	for(String key : currMap.keySet())
+    	{
+    		patternObj tmp = new patternObj(key,currMap.get(key).size());
+    		listToSort.add(tmp);
+    	}
+    	
+    	Collections.sort(listToSort);
+    	patternObj result = listToSort.get(difficulty);
+    	return result.getPattern();
+    }
+    
+   /* private String getKeyOfDifficulty(Map<String, ArrayList<String>> currMap ,int difficulty)
     {
         
         List<TreeMap<String, ArrayList<String>>> listToSort = new ArrayList<>();
@@ -258,9 +272,85 @@ public class HangmanManager {
         Collections.sort(listToSort, new patternSorter());
         TreeMap<String, ArrayList<String>> askedForMap = listToSort.get(difficulty);
         return askedForMap.firstKey();
+    }*/
+    /* patternObj is a class which I am using to implement the three comparisons to find the
+     * "hardest" pattern available. It has a constructor that gives it a pattern and the how many matches there
+     * are for that given pattern.
+     * It has a method getPattern() that returns the local instance variable "pattern".
+     * It implements Comparable, and as such has a compareTo method. Explained in method comments.
+     */
+    private class patternObj implements Comparable<patternObj>{
+
+        private String pattern;
+        private int matchAmt;
+
+        public patternObj(String pat, int matchAmt)
+        {
+            pattern = pat;
+            this.matchAmt = matchAmt;
+        }
+        
+        public String getPattern()
+        {
+        	return pattern;
+        }
+        
+        /* long if-else tree which does the following:
+         * 1. does this.pattern have more matches than other.pattern?
+         * 2. if matchAmt is same, does this.pattern reveal more characters than other.pattern?
+         * 3. if they reveal the same characters, sort by lexicographical order.
+         */
+
+        public int compareTo(patternObj other)
+        {
+            Integer length1 = this.matchAmt; //declaring this again for READABILITY! 
+            Integer length2 = other.matchAmt;
+
+
+            
+            int compareLength = length2.compareTo(length1); //sort descending
+
+            if( compareLength == 0 )
+            {                
+                Integer revealed1 = 0; //how many characters are revealed by this pattern?
+                Integer revealed2 = 0;
+                
+                String pat1 = this.pattern; //declaring this again for READABILITY! otherwise, it would look like "this.pattern.compareTo(other.pattern)" ew!
+                String pat2 = other.pattern;
+                
+                for(int i = 0; i < pat2.length(); i++)
+                {
+                	//if not a dash, then a character must have been revealed
+                    if(pat1.charAt(i) != '-')
+                    {
+                        revealed1++;
+                    }
+                    if(pat2.charAt(i) != '-')
+                    {
+                        revealed2++;
+                    }
+                }
+                int compareRevealedChars = revealed1.compareTo(revealed2); //sort ascending
+                if(compareRevealedChars == 0)
+                {
+                	//lexigraphical sorting. "---a" < "a---"
+                    return pat1.compareTo(pat2); //sort ascending
+                }
+                else
+                {
+                    return compareRevealedChars;
+                }
+            }
+            else
+            {
+                return compareLength;
+            }
+            
+
+        }
     }
     
-    private class patternSorter implements Comparator<TreeMap<String,ArrayList<String>>>{
+  /*  private class patternSorter implements Comparator<TreeMap<String,ArrayList<String>>>{
         
         @Override 
         public int compare(TreeMap<String,ArrayList<String>> mapOne, TreeMap<String,ArrayList<String>> mapTwo)
@@ -304,7 +394,7 @@ public class HangmanManager {
             }
             
         }
-    }
+    }*/
     
 
 
