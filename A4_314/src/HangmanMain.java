@@ -24,8 +24,8 @@ import java.util.TreeSet;
 
 public class HangmanMain  {
 
-    private static final String DICTIONARY_FILE = "smallDictionary.txt"; // change to smallDictionary.txt for testing
-    private static final boolean DEBUG = true;  // if true, program shows statistics of game in progress
+    private static final String DICTIONARY_FILE = "dictionary.txt"; // change to smallDictionary.txt for testing
+    private static final boolean DEBUG = false;  // if true, program shows statistics of game in progress
     private static final int MAX_GUESSES = 25;
 
     public static void main(String[] args) {
