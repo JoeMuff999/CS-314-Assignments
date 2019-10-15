@@ -3,9 +3,9 @@
 *  On my honor, <NAME>, this programming assignment is my own work
 *  and I have not provided this code to any other student.
 *
-*  Name:
-*  email address:
-*  UTEID:
+*  Name: Joey Muffoletto
+*  email address: jrmuff@utexas.edu
+*  UTEID: jrm7925
 *  Grader name:
 *  Number of slip days used on this assignment:
 */
@@ -462,6 +462,242 @@ public class LinkedListTester {
        
        //set
        
+       test.set(0,"im zero");
+       test.set(1, "im one");
+       if(test.toString().equals("[im zero, im one, im three]"))
+           System.out.println("PASSED set TEST");
+       else
+           System.out.println("FAILED set TEST");
+       test.set(0,"");
+       test.set(1, "");
+       
+       if(test.toString().equals("[, , im three]"))
+           System.out.println("PASSED set TEST");
+       else
+           System.out.println("FAILED set TEST");
+       test.makeEmpty();
+       test.add("");
+       test.set(0, "Setting an empty");
+       if(test.toString().equals("[Setting an empty]"))
+           System.out.println("PASSED set TEST");
+       else
+           System.out.println("FAILED set TEST");
+       
+     //testing size       
+       if(test.size() == 1)
+           System.out.println("PASSED size TEST");
+       else
+           System.out.println("FAILED size TEST");
+       
+       //get
+       
+       test.set(0,"im zero");
+       test.add("im one");
+      
+       if(test.get(test.size()-1).equals("im one"))
+           System.out.println("PASSED get TEST");
+       else
+           System.out.println("FAILED get TEST");
+       if(test.get(0).equals("im zero"))
+           System.out.println("PASSED get TEST");
+       else
+           System.out.println("FAILED get TEST");
+       test.insert(1, "im the middle");
+       if(test.get(1).equals("im the middle"))
+           System.out.println("PASSED get TEST");
+       else
+           System.out.println("FAILED get TEST");
+       
+       //testing size
+       if(test.size() == 3)
+           System.out.println("PASSED size TEST");
+       else
+           System.out.println("FAILED size TEST");
+       
+       //remove(int)
+       test.remove(0);
+       if(test.toString().equals("[im the middle, im one]"))
+           System.out.println("PASSED remove TEST");
+       else
+           System.out.println("FAILED remove TEST");
+       test.remove(test.size()-1);
+       if(test.toString().equals("[im the middle]"))
+           System.out.println("PASSED remove TEST");
+       else
+           System.out.println("FAILED remove TEST");
+       test.remove(test.size()-1);
+       if(test.toString().equals("[]"))
+           System.out.println("PASSED remove TEST");
+       else
+           System.out.println("FAILED remove TEST");
+       for(int i = 0; i < 5; i++)
+       {
+    	   test.add("" + i);
+    	   test.remove(0);
+       }     
+       if(test.toString().equals("[]"))
+           System.out.println("PASSED remove TEST");
+       else
+           System.out.println("FAILED remove TEST");
+       
+       //testing size
+       
+       if(test.size() == 0)
+           System.out.println("PASSED size TEST");
+       else
+           System.out.println("FAILED size TEST");
+       
+       //remove(E)
+       for(int i = 0; i <= 5; i++)
+       {
+    	   test.add("" + i);
+       }     
+       test.remove("5");       
+       if(test.toString().equals("[0, 1, 2, 3, 4]"))
+           System.out.println("PASSED remove TEST");
+       else
+           System.out.println("FAILED remove TEST");
+       test.remove(0);
+       test.remove("1");
+       if(test.toString().equals("[2, 3, 4]"))
+           System.out.println("PASSED remove TEST");
+       else
+           System.out.println("FAILED remove TEST");
+       test.remove("6");
+       if(test.toString().equals("[2, 3, 4]"))
+           System.out.println("PASSED remove TEST");
+       else
+           System.out.println("FAILED remove TEST");
+       
+       //testing size
+       if(test.size() == 3)
+           System.out.println("PASSED size TEST");
+       else
+           System.out.println("FAILED size TEST");
+       
+       //getSubList
+       test.makeEmpty();
+       for(int i = 0; i <= 5; i++)
+       {
+    	   test.add("" + i);
+       } 
+       if(test.getSubList(0,test.size()).toString().equals("[0, 1, 2, 3, 4, 5]"))
+           System.out.println("PASSED getSubList TEST");
+       else
+           System.out.println("FAILED getSubList TEST");
+       if(test.getSubList(3,4).toString().equals("[3]"))
+           System.out.println("PASSED getSubList TEST");
+       else
+           System.out.println("FAILED getSubList TEST");
+       if(test.getSubList(2,5).toString().equals("[2, 3, 4]"))
+           System.out.println("PASSED getSubList TEST");
+       else
+           System.out.println("FAILED getSubList TEST");
+       IList<String> tSL = test.getSubList(2, 5);
+       if(tSL.toString().equals("[2, 3, 4]"))
+           System.out.println("PASSED getSubList TEST");
+       else
+           System.out.println("FAILED getSubList TEST");
+       tSL = test.getSubList(2,2);
+       if(tSL.toString().equals("[]"))
+           System.out.println("PASSED getSubList TEST");
+       else
+           System.out.println("FAILED getSubList TEST");
+       
+       //testing size:
+       if(test.size() == 6 && tSL.size() == 0)
+           System.out.println("PASSED size TEST");
+       else
+           System.out.println("FAILED size TEST");
+       
+       //indexOf(E)
+       if(test.indexOf("1") == 1)
+    	   System.out.println("PASSED indexOf TEST");
+       else
+           System.out.println("FAILED indexOf TEST");
+       if(test.indexOf("7") == -1)
+    	   System.out.println("PASSED indexOf TEST");
+       else
+           System.out.println("FAILED indexOf TEST");
+       if(test.indexOf("0") == 0)
+    	   System.out.println("PASSED indexOf TEST");
+       else
+           System.out.println("FAILED indexOf TEST");
+       if(test.indexOf("5") == test.size()-1)
+    	   System.out.println("PASSED indexOf TEST");
+       else
+           System.out.println("FAILED indexOf TEST");
+       
+       //indexOf(E,int)
+       for(int i = 0; i <= 5; i++)
+       {
+    	   test.add("" + i);
+       } 
+       if(test.indexOf("1",2) == 7)
+    	   System.out.println("PASSED indexOf TEST");
+       else
+           System.out.println("FAILED indexOf TEST");
+       if(test.indexOf("5",2) == 5 && test.indexOf("5",5) == 5 && test.indexOf("5",6) == test.size()-1)
+    	   System.out.println("PASSED indexOf TEST");
+       else
+           System.out.println("FAILED indexOf TEST");
+       test.insert(5, "99");
+       if(test.indexOf("99",2) == 5 && test.indexOf("99", 6) == -1)
+    	   System.out.println("PASSED indexOf TEST");
+       else
+           System.out.println("FAILED indexOf TEST");
+       
+       //removeRange
+       test.makeEmpty();
+       for(int i = 0; i <= 10; i++)
+       {
+    	   test.add("" + i);
+       } 
+       test.removeRange(0,test.size());
+       if(test.toString().equals("[]"))
+    	   System.out.println("PASSED removeRange TEST");
+       else
+           System.out.println("FAILED removeRange TEST");
+       test.makeEmpty();
+       for(int i = 0; i <= 10; i++)
+       {
+    	   test.add("" + i);
+       } 
+       test.removeRange(1,test.size()-2);
+       if(test.toString().equals("[0, 9, 10]"))
+    	   System.out.println("PASSED removeRange TEST");
+       else
+           System.out.println("FAILED removeRange TEST");
+       
+       if(test.size() == 3)
+    	   System.out.println("PASSED size TEST");
+       else
+    	   System.out.println("FAILED size TEST");
+       
+       test.removeRange(0, test.size());       
+       for(int i = 0; i <= 10; i++)
+       {
+    	   test.add("" + i);
+       } 
+       test.removeRange(5,5);
+       if(test.toString().equals("[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"))
+    	   System.out.println("PASSED removeRange TEST");
+       else
+           System.out.println("FAILED removeRange TEST");      
+       
+       //equals
+       
+       IList<String> other = new LinkedList<>();
+       for(int i = 0; i <= 10; i++)
+       {
+    	   other.add("" + i);
+    	   test.add("" + i);
+       } 
+       System.out.println(other.size());
+       if(other.equals(test))
+    	   System.out.println("PASSED equals TEST");
+       else
+           System.out.println("FAILED equals TEST");
        
        // CS314 Students:
        // uncomment the following line to run tests comparing

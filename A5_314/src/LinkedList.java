@@ -205,7 +205,7 @@ public class LinkedList<E> implements IList<E> {
     public E set(int pos, E item)
     {
         if(pos < 0 || pos >= size || item == null)
-            throw new IllegalArgumentException("in method insert(int,E), int out of bounds || item is null");
+            throw new IllegalArgumentException("in method set(int,E), int out of bounds || item is null");
         
         DoubleListNode<E> nodeToSet = getNode(pos);
         E oldData = nodeToSet.getData();
@@ -241,12 +241,7 @@ public class LinkedList<E> implements IList<E> {
         if(pos < 0 || pos >= size || size <= 0)
             throw new IllegalArgumentException("Cannot remove from index which is out of bounds, or list has no elements to remove");
         
-        DoubleListNode<E> removeNode = HEAD.getNext();
-        for(int i = 0; i < pos; i++)
-        { 
-            removeNode = removeNode.getNext();
-        }
-        
+        DoubleListNode<E> removeNode = getNode(pos);
         size--;
         
         return removeNode(removeNode);
@@ -265,16 +260,11 @@ public class LinkedList<E> implements IList<E> {
     {
         if(obj == null)
             throw new IllegalArgumentException("in method remove(E), cannot remove object of value null");
-        DoubleListNode<E> curr = HEAD.getNext();
-        for(int i = 0; i < size; i++)
-        {
-             if(curr.getData().equals(obj))
-             {
-                 removeNode(curr);
-                 return true;
-             }
-        }
-        return false;
+        
+        int pos = indexOf(obj);
+        if(pos != -1)
+        	remove(pos);
+        return pos != -1;
     }
     
     private E removeNode(DoubleListNode<E> nodeToRemove)
@@ -297,9 +287,9 @@ public class LinkedList<E> implements IList<E> {
     @Override
     public IList<E> getSubList(int start, int stop)
     {
-        if(start < 0 || start > size || stop < size || stop > size)
+        if(start < 0 || start > size || stop < start || stop > size)
             throw new IllegalArgumentException("parameters are out of bounds for getSubList(start,stop)");
-        IList<E> subList = new LinkedList<E>();
+        LinkedList<E> subList = new LinkedList<E>();
         DoubleListNode<E> currentNode = getNode(start);
         for(int i = start; i < stop; i++)
         {
@@ -307,7 +297,7 @@ public class LinkedList<E> implements IList<E> {
             currentNode = currentNode.getNext();
             
         }
-        ((LinkedList<E>)subList).size = stop-start;
+        subList.size = stop-start;
         return subList;
     }
     /**
@@ -339,11 +329,12 @@ public class LinkedList<E> implements IList<E> {
     {
         if(item == null || pos < 0 || pos >= size)
             throw new IllegalArgumentException("in method indexOf(E,int), cannot find item of value null or int is OOB");
-        DoubleListNode<E> current = HEAD.getNext();
+        DoubleListNode<E> current = getNode(pos);
         for(int i = pos; i < size; i++)
         {
-            if(current.equals(item))
+            if(current.getData().equals(item))
                 return i;
+            current = current.getNext();
         }
         return -1;
     }
@@ -357,18 +348,18 @@ public class LinkedList<E> implements IList<E> {
     @Override
     public void removeRange(int start, int stop)
     {
-        if(start < 0 || start > size || stop < size || stop > size)
+        if(start < 0 || start > size || stop < start || stop > size)
             throw new IllegalArgumentException("parameters are out of bounds for removeRange(start,stop)");
         
-        DoubleListNode<E> startNode = getNode(start);
-        DoubleListNode<E> endNode = new DoubleListNode<E>();
+        DoubleListNode<E> startNode = getNode(start).getPrev();
+        DoubleListNode<E> endNode = startNode.getNext();
         for(int i = start; i < stop; i++)
         {
-            endNode = startNode.getNext();
+            endNode = endNode.getNext();
         }
         startNode.setNext(endNode);
         endNode.setPrev(startNode);
-        size-=(stop-start);       
+        size-=(stop-start); 
     }
     /**
      * Determine if this IList is equal to other. Two
@@ -376,26 +367,28 @@ public class LinkedList<E> implements IList<E> {
      * in the same order.
      * @return true if this IList is equal to other, false otherwise
      */
-    public boolean equals(Object othr)
+    public boolean equals(Object other)
     {
         //check if size is equal
-        LinkedList<E> other = (LinkedList<E>) othr;
-        if(other.size() != this.size)
+    	if(!(other instanceof IList))
+    	{
+    		return false;
+    	}
+        IList<?> otherIList = (IList<?>) other;
+        //use iterator
+        
+        if(otherIList.size() != this.size)
         {
+        	System.out.println(otherIList.size() + " " + this.size);
             return false;
         }
-        if(this.size == 0)
+        Iterator<?> iterator = otherIList.iterator();
+        Iterator<E> iteratorThis = this.iterator();
+       
+        while(iterator.hasNext())
         {
-            return true;
-        }
-        DoubleListNode<E> otherNode = other.HEAD.getNext();
-        DoubleListNode<E> thisNode = this.HEAD.getNext();
-        for(int i = 0; i < size; i++)
-        {
-            if(!otherNode.equals(thisNode))
-                return false;
-            otherNode = otherNode.getNext();
-            thisNode = thisNode.getNext();
+        	if(!iterator.next().equals(iteratorThis.next()))
+        		return false;
         }
         return true;
     }
@@ -420,16 +413,16 @@ public class LinkedList<E> implements IList<E> {
     @Override
     public Iterator<E> iterator()
     {
-        return new lliterator<E>(this);
+        return new lliterator();
     }
     
-    private class lliterator<E> implements Iterator<E>{
+    private class lliterator implements Iterator<E>{
         private DoubleListNode<E> currentNode;
         private DoubleListNode<E> trailer;
-        public lliterator(LinkedList<E> listToIterate)
+        public lliterator()
         {
-            currentNode = listToIterate.HEAD.getNext(); //avoid off by 1 logic error
-            trailer = listToIterate.HEAD;
+            currentNode = HEAD.getNext(); //avoid off by 1 logic error
+            trailer = HEAD;
         }
         @Override
         public boolean hasNext()
@@ -447,7 +440,7 @@ public class LinkedList<E> implements IList<E> {
         //TODO HELP PLEASE WHICH ONE DO I REMOVE? TRAILER OR CURRENT
         public void remove()
         {
-            
+            removeNode(trailer);
         }
     }
 
