@@ -688,6 +688,7 @@ public class LinkedListTester {
        //equals
        
        IList<String> other = new LinkedList<>();
+       test.makeEmpty();
        for(int i = 0; i <= 10; i++)
        {
     	   other.add("" + i);
