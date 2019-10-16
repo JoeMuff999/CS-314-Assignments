@@ -17,6 +17,7 @@
  */
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class LinkedList<E> implements IList<E> {
     // CS314 students. Add you instance variables here.
@@ -81,6 +82,8 @@ public class LinkedList<E> implements IList<E> {
      * @return the old first element of this list
      */
     public E removeFirst() {
+        if(size <= 0)
+            throw new IllegalArgumentException("cannot remove from list with size <= 0");
         return remove(0);
     }
 
@@ -178,10 +181,14 @@ public class LinkedList<E> implements IList<E> {
             size++;
         }        
     }
-    
+    /*
+     * return a node based on position
+     * pre: 0 <= pos <= size()
+     * psot: returns a DoubleListNode<E> at index pos
+     */
     private DoubleListNode<E> getNode(int pos)
     {
-        if(pos >= size() || pos < 0)
+        if(pos > size() || pos < 0)
             throw new IllegalArgumentException("parameter int in method getNode(int) is out of bounds");
         
         DoubleListNode<E> currentNode = HEAD.getNext();
@@ -238,7 +245,7 @@ public class LinkedList<E> implements IList<E> {
     @Override
     public E remove(int pos)
     {
-        if(pos < 0 || pos >= size || size <= 0)
+        if(pos < 0 || pos >= size)
             throw new IllegalArgumentException("Cannot remove from index which is out of bounds, or list has no elements to remove");
         
         DoubleListNode<E> removeNode = getNode(pos);
@@ -266,9 +273,15 @@ public class LinkedList<E> implements IList<E> {
         	remove(pos);
         return pos != -1;
     }
-    
+    /*
+     * removes node, returns value of removed node
+     * pre: nodeToRemove != null
+     * post: return E, the value of the removed node
+     */
     private E removeNode(DoubleListNode<E> nodeToRemove)
     {
+        if(nodeToRemove == null)
+            throw new IllegalArgumentException("how did this even happen");
         nodeToRemove.getPrev().setNext(nodeToRemove.getNext());
         nodeToRemove.getNext().setPrev(nodeToRemove.getPrev());
         
@@ -313,7 +326,21 @@ public class LinkedList<E> implements IList<E> {
     {
         if(item == null)
             throw new IllegalArgumentException("in method indexOf(E), cannot find item of value null");
-        return indexOf(item,0);        
+        
+        DoubleListNode<E> current = HEAD.getNext();
+        for(int i = 0; i < size; i++)
+        {
+            if(current.getData().equals(item))
+                return i;
+            current = current.getNext();
+        }
+        /* so why not just say "return indexOf(item,0)?
+         * well, as you can see from preconditions, this doesnt work. indexOf(E) is not supposed to
+         * throw an exception if size is 0. However, if size is 0, and i then call indexOf(item,0), 
+         * this will throw an exception (as pos >= size). Therefore, since these methods have conflicting
+         * (and imo confusing) guidelines for throwing an exception, they must be separated.
+         */
+        return -1;        
     }
     /**
      * find the position of an element in the list starting at a specified position.
@@ -327,7 +354,7 @@ public class LinkedList<E> implements IList<E> {
     @Override
     public int indexOf(E item, int pos)
     {
-        if(item == null || pos < 0 || pos >= size)
+        if(item == null || pos < 0 || pos >= size) 
             throw new IllegalArgumentException("in method indexOf(E,int), cannot find item of value null or int is OOB");
         DoubleListNode<E> current = getNode(pos);
         for(int i = pos; i < size; i++)
@@ -374,19 +401,20 @@ public class LinkedList<E> implements IList<E> {
     	{
     		return false;
     	}
-        IList<?> otherIList = (IList<?>) other;
-        //use iterator
+        IList<?> otherIList = (IList<?>) other;      
         
         if(otherIList.size() != this.size)
         {
-        	System.out.println(otherIList.size() + " " + this.size);
+            //if size not equal, not same list
             return false;
         }
+        //use iterator
         Iterator<?> iterator = otherIList.iterator();
         Iterator<E> iteratorThis = this.iterator();
        
         while(iterator.hasNext())
         {
+            //whenever the elemtsn arent the same, they are not equal
         	if(!iterator.next().equals(iteratorThis.next()))
         		return false;
         }
@@ -418,7 +446,9 @@ public class LinkedList<E> implements IList<E> {
     
     private class lliterator implements Iterator<E>{
         private DoubleListNode<E> currentNode;
-        private DoubleListNode<E> trailer;
+        private DoubleListNode<E> trailer; //used for remove
+        private boolean gotNext; //can't call remove if you haven't called next
+        
         public lliterator()
         {
             currentNode = HEAD.getNext(); //avoid off by 1 logic error
@@ -432,15 +462,26 @@ public class LinkedList<E> implements IList<E> {
         @Override
         public E next()
         {
+            if(!hasNext())
+                throw new NoSuchElementException("hasNext is false, don't call next please :)");
+            
             E currentData = currentNode.getData();
             trailer = currentNode;
             currentNode = currentNode.getNext();
+            gotNext = true;
             return currentData;
         }
-        //TODO HELP PLEASE WHICH ONE DO I REMOVE? TRAILER OR CURRENT
         public void remove()
         {
-            removeNode(trailer);
+            if(gotNext)
+            {
+                System.out.println("removed " + trailer.getData());
+                removeNode(trailer);
+                gotNext = false;
+                size--;
+            }                
+            else
+                throw new IllegalStateException("need to call next before remove");
         }
     }
 
