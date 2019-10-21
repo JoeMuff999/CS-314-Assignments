@@ -15,6 +15,11 @@
  *  UTEID:
  *  email address:
  *
+ *
+ *ask if you need to use stringbuilders for efficiency or if they dont really care
+ *ask about the binary code
+ *ask if revString is okay
+ *ask what nextIsDouble helper method actually does
  */
 
 //imports
@@ -51,7 +56,16 @@ public class Recursive
         {
             return "0";
         }
-        return n % 2 + getBinary(n / 2);
+        if(n < 0)
+        {
+            n*=-1;
+            return "-"+ (n % 2 + (10 * Integer.parseInt(getBinary(n / 2))));
+        }
+        else
+        {
+            return "" + (n % 2 + (10 * Integer.parseInt(getBinary(n / 2))));
+        }
+        
     }
 
     /**
@@ -119,7 +133,7 @@ public class Recursive
      */
     public static ArrayList<String> listMnemonics(String number)
     {
-        if (number == null || number.length() == 0 || !allDigits(number))
+        if (number == null )//|| number.length() == 0 || !allDigits(number))
         {
             throw new IllegalArgumentException("Failed precondition: listMnemonics");
         }
