@@ -32,20 +32,20 @@ public class RecursiveTester {
 
     // run the tests
     public static void main(String[] args) {
-//        doBinaryTests();
-//        doReverseTests();
-//        doNextIsDoubleTests();
-//        doListMnemonicsTests();
-       doCarpetTest(); 
-//        doMazeTests();
-//       doFlowOffMapTests();
-//        doFairTeamsTests();
-//        studentTests();
+       doBinaryTests();
+        doReverseTests();
+        doNextIsDoubleTests();
+        doListMnemonicsTests();
+//       doCarpetTest(); 
+        doMazeTests();
+      doFlowOffMapTests();
+       doFairTeamsTests();
+        studentTests();
     }
 
     private static void doMazeTests() {        
         int mazeTestNum = 1;
-        runMazeTest("$GSGE", 1, 2, mazeTestNum++);
+      runMazeTest("$GSGE", 1, 2, mazeTestNum++);
         runMazeTest("$Y$SGE", 1, 1, mazeTestNum++);
         String maze = "GGSGG**GGGGG";
         runMazeTest(maze, 3, 0, mazeTestNum++);
@@ -138,19 +138,17 @@ public class RecursiveTester {
 //        s.stop();
 //        System.out.println("Time to solve for 16 people on 4 teams: " + s.time() + "\n");
 //        System.out.println(actualInt);
-        
+//        
         
         int[] abilities = {1, 2, 3, 4, 5, 6, 7};
         if(Recursive.minDifference(3, abilities) == 1)
             System.out.println( "Test 1 passed. min difference.");
         else
             System.out.println( "Test 1 failed. min difference.");
-
         if(Recursive.minDifference(5, abilities) == 2)
             System.out.println( "Test 2 passed. min difference.");
         else
             System.out.println( "Test 2 failed. min difference.");
-
         if(Recursive.minDifference(6, abilities) == 4)
             System.out.println( "Test 3 passed. min difference.");
         else

@@ -208,12 +208,12 @@ public class RecursiveTester3 {
       System.out.println(formattedTestResults(testNum, testingWhat, testResults));
 
       testNum = 22;
-      testingWhat = "problem 4 - mnemonics based on ''";
-      expectedStringArray.clear();
-      expectedStringArray.add("");
-      actualStringArray = r.listMnemonics("");
-      testResults = (actualStringArray.equals(expectedStringArray)) ? PASSED_TEST : FAILED_TEST;
-      System.out.println(formattedTestResults(testNum, testingWhat, testResults));
+//      testingWhat = "problem 4 - mnemonics based on ''";
+//      expectedStringArray.clear();
+//      expectedStringArray.add("");
+//      actualStringArray = r.listMnemonics("");
+//      testResults = (actualStringArray.equals(expectedStringArray)) ? PASSED_TEST : FAILED_TEST;
+//      System.out.println(formattedTestResults(testNum, testingWhat, testResults));
 //
 //      testNum = 23;
 //      testingWhat = "problem 7 - sudoku solver";

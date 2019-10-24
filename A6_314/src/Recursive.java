@@ -17,14 +17,16 @@
  *
  *
  *ask if you need to use stringbuilders for efficiency or if they dont really care
- *ask about the binary code
- *ask if revString is okay
+ *ask about the binary code -> cant handle very large numbers
  *ask what nextIsDouble helper method actually does
+ *ask how to rearrange your exit for the maze solver and currCoins + maxCoins :(
+ *ask how to to reduce the parameters you have for your team solver 
  */
 
 //imports
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.awt.Graphics;
 import java.awt.Color;
 
@@ -34,7 +36,6 @@ import java.awt.Color;
  */
 public class Recursive
 {
-
     /**
      * Problem 1: convert a base 10 int to binary recursively.
      *   <br>pre: n != Integer.MIN_VALUE<br>
@@ -44,6 +45,7 @@ public class Recursive
      *   @param n the base 10 int to convert to base 2
      *   @return a String that is a binary representation of the parameter n
      */
+
     public static String getBinary(int n)
     {
         if (n == Integer.MIN_VALUE)
@@ -56,16 +58,18 @@ public class Recursive
         {
             return "0";
         }
-        if(n < 0)
+
+        //multiply each recursive step by ten in order to reverse it;
+        int magicRecursiveNumber = 10;
+        if (n < 0)
         {
-            n*=-1;
-            return "-"+ (n % 2 + (10 * Integer.parseInt(getBinary(n / 2))));
-        }
-        else
+            n *= -1;
+            return "-" + (n % 2 + (magicRecursiveNumber * Integer.parseInt(getBinary(n / 2))));
+        } else
         {
-            return "" + (n % 2 + (10 * Integer.parseInt(getBinary(n / 2))));
+            return "" + (n % 2 + (magicRecursiveNumber * Integer.parseInt(getBinary(n / 2))));
         }
-        
+
     }
 
     /**
@@ -133,14 +137,13 @@ public class Recursive
      */
     public static ArrayList<String> listMnemonics(String number)
     {
-        if (number == null )//|| number.length() == 0 || !allDigits(number))
+        if (number == null || number.length() == 0 || !allDigits(number))
         {
             throw new IllegalArgumentException("Failed precondition: listMnemonics");
         }
 
         ArrayList<String> result = new ArrayList<>();
         recursiveMnemonics(result, "", number);
-        System.out.println(result.toString());
         return result;
     }
 
@@ -242,13 +245,13 @@ public class Recursive
             g.setColor(Color.white);
             g.fillRect((int) x + (size / 3), (int) y + (size / 3), size / 3, size / 3);
 
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
                     if (!(i == 1 && j == 1))
                     {
-                        drawSquares(g, size / 3, limit, x + i * size / 3, y+ j * size / 3);
+                        drawSquares(g, size / 3, limit, x + i * size / 3, y + j * size / 3);
                     }
                 }
             }
@@ -275,66 +278,50 @@ public class Recursive
         {
             throw new IllegalArgumentException("Failed precondition: canFlowOffMap");
         }
-        
-        System.out.println(row + " and then the column " + col);
-        if(row == map.length-1|| col == map[0].length-1 || row == 0 || col == 0)
+        if (row == map.length - 1 || col == map[0].length - 1 || row == 0 || col == 0)
         {
-            System.out.println(row + " and true then the column " + col);
             return true;
-        }
-        else
+        } else
         {
             //0 = left, 1 = right, 2 = up, 3 = down
             boolean[] validChoices = isValidDirection(row, col, map);
-            for(int i = 0; i < validChoices.length; i++)
-            {   
-                int origRow = row;
-                int origCol = col;
-                if(validChoices[i])
+            for (int i = 0; i < validChoices.length; i++)
+            {
+                if (validChoices[i])
                 {
-                    System.out.println(row + " and choice then the column " + col);
-                    if(i == 0)
+
+                    if (i == 0)
                     {
-                        if(canFlowOffMap(map, row, col-1))
+                        if (canFlowOffMap(map, row, col - 1))
+                            return true;
+                    } else if (i == 1)
+                    {
+                        if (canFlowOffMap(map, row, col + 1))
+                            return true;
+                    } else if (i == 2)
+                    {
+                        if (canFlowOffMap(map, row - 1, col))
+                            return true;
+                    } else
+                    {
+                        if (canFlowOffMap(map, row + 1, col))
                             return true;
                     }
-                    else if(i == 1)
-                    {
-                        if(canFlowOffMap(map, row, col+1))
-                            return true;
-                    }
-                    else if(i == 2)
-                    {
-                        if(canFlowOffMap(map, row-1, col))
-                            return true;
-                    }
-                    else
-                    {
-                        if(canFlowOffMap(map, row+1, col))
-                            return true;
-                    }
-                }
-                else
-                {
-                    row = origRow;
-                    col = origCol;
                 }
             }
-            
-            
-            
+
         }
-        return false;  
+        return false;
     }
-    
+
     private static boolean[] isValidDirection(int row, int col, int[][] map)
     {
         boolean[] local = new boolean[4];
         int currentElevation = map[row][col];
-        local[0] = col > 0 && map[row][col-1] < currentElevation;
-        local[1] = col+1 < map[0].length && map[row][col+1] < currentElevation ;
-        local[2] = row > 0 && map[row-1][col] < currentElevation;
-        local[3] = row+1 < map.length && map[row+1][col] < currentElevation;
+        local[0] = col > 0 && map[row][col - 1] < currentElevation;
+        local[1] = col + 1 < map[0].length && map[row][col + 1] < currentElevation;
+        local[2] = row > 0 && map[row - 1][col] < currentElevation;
+        local[3] = row + 1 < map.length && map[row + 1][col] < currentElevation;
         return local;
     }
 
@@ -394,7 +381,64 @@ public class Recursive
      */
     public static int minDifference(int numTeams, int[] abilities)
     {
-        return -1;
+        //get each possibility recursively. 
+        //store total value of teams 
+        int[] teams = new int[numTeams];
+
+        int[] currAssignments = new int[numTeams];
+        return recursiveTeams(0, abilities, teams, Integer.MAX_VALUE, currAssignments);
+    }
+
+    private static int recursiveTeams(int indexToCheck, int[] remainingPeople, int[] teams, int minDiff,
+            int[] currAssignments)
+    {
+
+        if (indexToCheck >= remainingPeople.length)
+        {
+            if (checkEmpty(currAssignments))
+                return Integer.MAX_VALUE;
+            else
+            {
+                return getDiff(teams);
+            }
+        } else
+        {
+            for (int i = 0; i < teams.length; i++)
+            {
+                currAssignments[i]++;
+                teams[i] += remainingPeople[indexToCheck];
+                minDiff = Math.min(minDiff,
+                        recursiveTeams(indexToCheck + 1, remainingPeople, teams, minDiff, currAssignments));
+                teams[i] -= remainingPeople[indexToCheck];
+                currAssignments[i]--;
+            }
+
+        }
+        return minDiff;
+    }
+
+    private static int getDiff(int[] teams)
+    {
+        int minTeam = Integer.MAX_VALUE;
+        int maxTeam = Integer.MIN_VALUE;
+        for (int i = 0; i < teams.length; i++)
+        {
+            minTeam = Math.min(minTeam, teams[i]);
+            maxTeam = Math.max(maxTeam, teams[i]);
+        }
+        return maxTeam - minTeam;
+    }
+
+    private static boolean checkEmpty(int[] currAssignments)
+    {
+        for (int val : currAssignments)
+        {
+            if (val == 0)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -417,6 +461,117 @@ public class Recursive
      */
     public static int canEscapeMaze(char[][] rawMaze)
     {
-        return -1;
+        int coinMax = 0;
+        int startRow = 0;
+        int startCol = 0;
+        //find the starting point and how many coins there are
+        for (int i = 0; i < rawMaze.length; i++)
+        {
+            for (int j = 0; j < rawMaze[0].length; j++)
+            {
+                if (rawMaze[i][j] == '$')
+                {
+                    coinMax++;
+                } else if (rawMaze[i][j] == 'S')
+                {
+                    startRow = i;
+                    startCol = j;
+                }
+            }
+        }
+        //set the start to G so I don't have to handle the S case.
+        rawMaze[startRow][startCol] = 'G';
+
+        return recursiveMaze(rawMaze, startRow, startCol, 0, coinMax, 0);
+    }
+
+    private static int recursiveMaze(char[][] rawMaze, int row, int col, int currCoins, int maxCoins, int possibility)
+    {
+        if (possibility == 2)
+            return possibility;
+
+        if (rawMaze[row][col] == 'E' && currCoins == maxCoins)
+        {
+            return 2;
+        } else if (rawMaze[row][col] == 'E')
+        {
+            return 1;
+        } else
+        {
+            //0 = left, 1 = right, 2 = up, 3 = down
+            boolean[] validMoves = isValidMove(rawMaze, row, col);
+            for (int i = 0; i < validMoves.length; i++)
+            {
+                int origRow = row;
+                int origCol = col;
+                int origCoinCount = currCoins;
+                //store the previous maze 
+                char[][] origMaze = new char[rawMaze.length][rawMaze[0].length];
+                for (int j = 0; j < rawMaze.length; j++)
+                {
+                    origMaze[j] = rawMaze[j].clone();
+                }
+                if (validMoves[i])
+                {
+                    if (i == 0)
+                    {
+                        col = col - 1;
+                    } else if (i == 1)
+                    {
+                        col = col + 1;
+                    } else if (i == 2)
+                    {
+                        row = row - 1;
+                    } else
+                    {
+                        row = row + 1;
+                    }
+                    if (isMoney(rawMaze, row, col))
+                        currCoins++;
+
+                    rawMaze[row][col] = alterSpace(rawMaze, row, col);
+                    possibility = Math.max(possibility,
+                            recursiveMaze(rawMaze, row, col, currCoins, maxCoins, possibility));
+
+                    //backtrack if necessary
+                    row = origRow;
+                    col = origCol;
+                    rawMaze = origMaze;
+                    currCoins = origCoinCount;
+                }
+
+            }
+
+        }
+        return possibility;
+    }
+
+    //make these magic
+    private static boolean isMoney(char[][] rawMaze, int row, int col)
+    {
+        return rawMaze[row][col] == '$';
+    }
+
+    private static char alterSpace(char[][] rawMaze, int row, int col)
+    {
+        char currentSpace = rawMaze[row][col];
+        if (currentSpace == 'G')
+            return 'Y';
+        else if (currentSpace == 'Y')
+            return '*';
+        else if (currentSpace == '$')
+            return 'Y';
+        return 'E';
+
+    }
+
+    private static boolean[] isValidMove(char[][] rawMaze, int row, int col)
+    {
+        boolean[] local = new boolean[4];
+        local[0] = col > 0 && rawMaze[row][col - 1] != '*';
+        local[1] = col + 1 < rawMaze[0].length && rawMaze[row][col + 1] != '*';
+        local[2] = row > 0 && rawMaze[row - 1][col] != '*';
+        local[3] = row + 1 < rawMaze.length && rawMaze[row + 1][col] != '*';
+        return local;
     }
 }
