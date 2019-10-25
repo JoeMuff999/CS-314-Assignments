@@ -2,21 +2,16 @@
 
 /*  Student information for assignment:
  *
- *  On <MY|OUR> honor, <NAME1> and <NAME2), this programming assignment is <MY|OUR> own work
- *  and <I|WE> have not provided this code to any other student.
+ *  On <MY> honor, <Joey Muffoletto>, this programming assignment is <MY> own work
+ *  and <I> have not provided this code to any other student.
  *
  *  Number of slip days used:
  *
  *  Student 1 (Student whose Canvas account is being used)
- *  UTEID:
- *  email address:
- *  Grader name:
- *  Section number:
- *
- *  Student 2
- *  UTEID:
- *  email address:
- *
+ *  UTEID: jrm7925
+ *  email address: jrmuff@utexas.edu
+ *  Grader name: Andrew
+ *  Section number: 50220
  */
 
 

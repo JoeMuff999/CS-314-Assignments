@@ -1,19 +1,16 @@
 /*  Student information for assignment:
  *
- *  On <MY|OUR> honor, <NAME1> and <NAME2), this programming assignment is <MY|OUR> own work
- *  and <I|WE> have not provided this code to any other student.
+ *  On <MY> honor, <Joey Muffoletto>, this programming assignment is <MY> own work
+ *  and <I> have not provided this code to any other student.
  *
  *  Number of slip days used:
  *
  *  Student 1 (Student whose Canvas account is being used)
- *  UTEID:
- *  email address:
- *  Grader name:
- *  Section number:
- *
- *  Student 2
- *  UTEID:
- *  email address:
+ *  UTEID: jrm7925
+ *  email address: jrmuff@utexas.edu
+ *  Grader name: Andrew
+ *  Section number: 50220
+
  *
  *
  *ask if you need to use stringbuilders for efficiency or if they dont really care
@@ -459,6 +456,13 @@ public class Recursive
      * rawMaze is not altered as a result of this method.
      * @return per the post condition
      */
+    //declaring magic characters
+    private static final char coin = '$';
+    private static final char greenSpace = 'G';
+    private static final char yellowSpace = 'Y';
+    private static final char wall = '*';
+    private static final char startSpace = 'S';
+    private static final char exit = 'E';
     public static int canEscapeMaze(char[][] rawMaze)
     {
         int coinMax = 0;
@@ -469,10 +473,10 @@ public class Recursive
         {
             for (int j = 0; j < rawMaze[0].length; j++)
             {
-                if (rawMaze[i][j] == '$')
+                if (rawMaze[i][j] == coin)
                 {
                     coinMax++;
-                } else if (rawMaze[i][j] == 'S')
+                } else if (rawMaze[i][j] == startSpace)
                 {
                     startRow = i;
                     startCol = j;
@@ -480,20 +484,29 @@ public class Recursive
             }
         }
         //set the start to G so I don't have to handle the S case.
-        rawMaze[startRow][startCol] = 'G';
+        rawMaze[startRow][startCol] = greenSpace;
 
         return recursiveMaze(rawMaze, startRow, startCol, 0, coinMax, 0);
     }
-
+    /*
+     * recursively paths through rawMaze until it finds a solution in which all coins
+     * are obtained, or until every path has been traversed.
+     * returns 2 if all coins collected and a valid exit
+     * returns 1 if a valid exit but not all coins possible
+     * returns 0 if no valid exit
+     */
+    //how can i possibly cut down on this method's size without doing incredibly
+    //unorthodox helper methods or just redoing my whole structure?
     private static int recursiveMaze(char[][] rawMaze, int row, int col, int currCoins, int maxCoins, int possibility)
     {
+    
         if (possibility == 2)
             return possibility;
 
-        if (rawMaze[row][col] == 'E' && currCoins == maxCoins)
+        if (rawMaze[row][col] == exit && currCoins == maxCoins)
         {
             return 2;
-        } else if (rawMaze[row][col] == 'E')
+        } else if (rawMaze[row][col] == exit)
         {
             return 1;
         } else
@@ -506,11 +519,8 @@ public class Recursive
                 int origCol = col;
                 int origCoinCount = currCoins;
                 //store the previous maze 
-                char[][] origMaze = new char[rawMaze.length][rawMaze[0].length];
-                for (int j = 0; j < rawMaze.length; j++)
-                {
-                    origMaze[j] = rawMaze[j].clone();
-                }
+                char[][] origMaze = copyMaze(rawMaze);
+                
                 if (validMoves[i])
                 {
                     if (i == 0)
@@ -546,21 +556,37 @@ public class Recursive
         return possibility;
     }
 
+    
+    /*
+     * returns a deep copy of the param rawMaze
+     */
+    private static char[][] copyMaze(char[][] rawMaze)
+    {
+    	char[][] local = new char[rawMaze.length][rawMaze[0].length];
+    	for (int j = 0; j < rawMaze.length; j++)
+        {
+    		local[j] = rawMaze[j].clone();
+        }
+    	return local;
+    }
+
+    
+
     //make these magic
     private static boolean isMoney(char[][] rawMaze, int row, int col)
     {
-        return rawMaze[row][col] == '$';
+        return rawMaze[row][col] == coin;
     }
 
     private static char alterSpace(char[][] rawMaze, int row, int col)
     {
         char currentSpace = rawMaze[row][col];
-        if (currentSpace == 'G')
-            return 'Y';
-        else if (currentSpace == 'Y')
-            return '*';
-        else if (currentSpace == '$')
-            return 'Y';
+        if (currentSpace == greenSpace)
+            return yellowSpace;
+        else if (currentSpace == yellowSpace)
+            return wall;
+        else if (currentSpace == coin)
+            return yellowSpace;
         return 'E';
 
     }
