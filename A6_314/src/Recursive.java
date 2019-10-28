@@ -3,7 +3,7 @@
  *  On <MY> honor, <Joey Muffoletto>, this programming assignment is <MY> own work
  *  and <I> have not provided this code to any other student.
  *
- *  Number of slip days used: 1
+ *  Number of slip days used: 2
  *
  *  Student 1 (Student whose Canvas account is being used)
  *  UTEID: jrm7925

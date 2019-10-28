@@ -5,7 +5,7 @@
  *  On <MY> honor, <Joey Muffoletto>, this programming assignment is <MY> own work
  *  and <I> have not provided this code to any other student.
  *
- *  Number of slip days used: 1
+ *  Number of slip days used: 2
  *
  *  Student 1 (Student whose Canvas account is being used)
  *  UTEID: jrm7925
@@ -103,14 +103,7 @@ public class RecursiveTester {
     // post: run student test
     private static void studentTests() {
         // CS314 students put your tests here
-      System.out.println("Stress test for minDifference - may take up to a minute");
-      int[] testerArr = new int[] {5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 100000};
-      Stopwatch s = new Stopwatch();
-      s.start();
-      int actualInt = Recursive.minDifference(4, testerArr);
-      s.stop();
-      System.out.println("Time to solve for 16 people on 4 teams: " + s.time() + "\n");
-      System.out.println(actualInt);
+
         Recursive r = new Recursive();
         if(r == null)
             throw new IllegalArgumentException("how did this even happen");
