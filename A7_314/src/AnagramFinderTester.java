@@ -37,7 +37,7 @@ public class AnagramFinderTester {
         // tests on the anagram solver itself
         //boolean displayAnagrams = getChoiceToDisplayAnagrams();
         AnagramSolver solver = new AnagramSolver(AnagramMain.readWords(dictionaryFileName));
-        runAnagramTests(solver, true);
+        runAnagramTests(solver, false);
     }
 
     private static void letterInventoryTests() {
@@ -192,16 +192,17 @@ public class AnagramFinderTester {
         Stopwatch st = new Stopwatch();
         try {
             Scanner sc = new Scanner(new File(testCaseFileName));
-            int NUM_TEST_CASES = Integer.parseInt(sc.nextLine().trim());
+            final int  NUM_TEST_CASES = Integer.parseInt(sc.nextLine().trim());
             System.out.println(NUM_TEST_CASES);
-            NUM_TEST_CASES = 5;
             for (int i = 0; i < NUM_TEST_CASES; i++) {
                 // expected results
+                    
                 TestCase currentTest = new TestCase(sc);
                 solverTestCases++;
                 st.start();
                 // actual results
                 List<List<String>> actualAnagrams = solver.getAnagrams(currentTest.phrase, currentTest.maxWords);
+                System.out.println(solver.recursiveCalls);
                 st.stop();
                 if (checkPassOrFailTest(currentTest, actualAnagrams)) {
                     solverTestCasesPassed++;

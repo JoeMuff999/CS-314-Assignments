@@ -15,6 +15,8 @@
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.TreeMap;
 public class AnagramSolver {
     
     Map<String, LetterInventory> wordInventory;
+    public int recursiveCalls;
 
     /*
      * pre: list != null
@@ -57,54 +60,100 @@ public class AnagramSolver {
         if(maxWords == 0)
             maxWords = Integer.MAX_VALUE;
         //recursiveAnagrams(invOfBase, currentAnagram, wordInventory, maxWords);
-        return recursiveAnagrams(invOfBase, currentAnagram, wordInventory, maxWords);
+
+        List<String> blacklist = new ArrayList<>();
+        recursiveCalls = 0;
+        Map<String, LetterInventory> validDictionary = getValidDictionary(invOfBase, wordInventory,blacklist);
+        return recursiveAnagrams(invOfBase, currentAnagram, validDictionary, maxWords, blacklist);
     }
     
-    private List<List<String>> recursiveAnagrams(LetterInventory currentInventory, List<String> currentAnagram, Map<String, LetterInventory> validDictionary, int maxWords)
+    private List<List<String>> recursiveAnagrams(LetterInventory currentInventory, List<String> currentAnagram, Map<String, LetterInventory> validDictionary, int maxWords, List<String> blacklist)
     {
-        List<List<String>> ductTape = new ArrayList<>();
+        List<List<String>> result = new ArrayList<>();
         //base case
-        //when there are no more validDictionary, or when the base is out of letters, is currentAnagram valid?
-        //List<List<String>> toReturn = new ArrayList<>();
+        //when there are no more validDictionary, or when the base is out of letters, is currentAnagram valid?\
+        recursiveCalls++;
+        if(maxWords - currentAnagram.size() == 1)
+        {
+            if(lastWordFails(currentInventory.size(), validDictionary))
+                return result;
+        }            
         if(currentInventory == null || currentInventory.isEmpty())
         {            
-            if(validResult(currentAnagram, maxWords))
-            {              
-               //System.out.println("current anagram " + currentAnagram.toString());
+            if(currentAnagram.size() <= maxWords)
+            {
                 List<String> tmp = new ArrayList<>(currentAnagram);
-                ductTape.add(tmp);
-                //System.out.println(ductTape.toString());
-                return ductTape;               
-            }
-            //return null;
+                Collections.sort(tmp);
+                List<List<String>> temp = new ArrayList<>();
+                temp.add(tmp);
                 
+                return temp;               
+            }                
         }
-        else
+        else if(currentAnagram.size() < maxWords)
         {
-            validDictionary = getValidDictionary(currentInventory, validDictionary);
-            //System.out.println("current dictionary " + validDictionary.toString());
-            //System.out.println("current inventory " + currentInventory.toString());
+            validDictionary = getValidDictionary(currentInventory, validDictionary, blacklist);
             for(String key : validDictionary.keySet())
             {
                 currentAnagram.add(key);
                 LetterInventory originalInventory = new LetterInventory("");
                 originalInventory = originalInventory.add(currentInventory);
                 currentInventory = currentInventory.subtract(validDictionary.get(key));
-                if(recursiveAnagrams(currentInventory, currentAnagram, validDictionary,maxWords).size() != 0)
-                    ductTape.add(recursiveAnagrams(currentInventory, currentAnagram, validDictionary,maxWords).get(0));
-                //System.out.println("reached " + originalInventory);
+                List<List<String>> anagramList = recursiveAnagrams(currentInventory, currentAnagram, validDictionary,maxWords, blacklist);
+                if(anagramList.size() > 0)
+                {
+                    for(List<String> anagram : anagramList)
+                        result.add(anagram);
+                }
                 currentInventory = originalInventory;
                 currentAnagram.remove(currentAnagram.size()-1);
-                
+                if(currentAnagram.size() > 0 && !blacklist.contains(currentAnagram.get(0)))
+                    blacklist.add(currentAnagram.get(0));
                 
             }
+            
         }
-        return ductTape;
-        
-        
+
+        Collections.sort(result, new AnagramComparator());
+        if(result.size() > 0)
+            result = removeDuplicates(result);
+        return result;       
     }
     
-    private Map<String, LetterInventory> getValidDictionary(LetterInventory currentInventory, Map<String, LetterInventory> currentDictionary)
+    private boolean lastWordFails(int sizeOfInv, Map<String, LetterInventory> validDictionary)
+    {
+        for(String key : validDictionary.keySet())
+        {
+            if(sizeOfInv <= validDictionary.get(key).size())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    private List<List<String>> removeDuplicates(List<List<String>> currentList)
+    {
+        List<List<String>> listToReturn = new ArrayList<>();
+        List<String> previous = new ArrayList<>();
+        previous = currentList.get(0);
+        listToReturn.add(previous);
+        
+        for(int i = 1; i < currentList.size(); i++)
+        {
+            List<String> curr = currentList.get(i);
+            if(!curr.equals(previous))
+                listToReturn.add(curr);
+            
+            
+            previous = curr;
+                
+        }
+        return listToReturn;
+    }
+    
+    private Map<String, LetterInventory> getValidDictionary(LetterInventory currentInventory, Map<String, LetterInventory> currentDictionary, List<String> blacklist)
     {
         //iterate over currentDictionary's key set
         Map<String, LetterInventory> newDict = new HashMap<>();
@@ -112,25 +161,36 @@ public class AnagramSolver {
         for(String key : currentDictionary.keySet())
         {
             LetterInventory toSubtract = currentDictionary.get(key);
-            if(currentInventory.subtract(toSubtract) != null)
+            if(currentInventory.subtract(toSubtract) != null && !blacklist.contains(key)) 
                 newDict.put(key, toSubtract);
         }
         
         return newDict;
     }
+
     
-    private boolean validResult(List<String> currentAnagram, int maxWords)
-    {
-        if(currentAnagram.size() > maxWords)
-            return false;
-        for(String str : currentAnagram)
+    private static class AnagramComparator implements Comparator<List<String>> {
+        @Override
+        public int compare(List<String> o1, List<String> o2)
         {
-            if(!wordInventory.containsKey(str))
+            // TODO Auto-generated method stub
+            int compareLength = o1.size() - o2.size();
+            if(compareLength != 0)
             {
-                return false;
+                return compareLength;
             }
+            else
+            {
+                for(int i = 0; i < o1.size(); i++)
+                {
+                    int compareString = o1.get(i).compareTo(o2.get(i));
+                    if(compareString != 0)
+                        return compareString;                          
+                }
+            }
+            return 0;
         }
-        return true;
+        
     }
 
 }
