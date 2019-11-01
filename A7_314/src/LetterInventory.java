@@ -2,13 +2,13 @@
  *
  * Student information for assignment:
  *
- *  On my honor, <NAME>, this programming assignment is my own work
+ *  On my honor, Joey Muffoletto, this programming assignment is my own work
  *  and I have not provided this code to any other student.
  *
- *  UTEID:
- *  email address:
- *  Grader name:
- *  Number of slip days I am using:
+ *  UTEID: jrm7925
+ *  email address: jrmuff@utexas.edu
+ *  Grader name: Andrew
+ *  Number of slip days I am using: 0
  */
 public class LetterInventory
 {
@@ -67,7 +67,10 @@ public class LetterInventory
     {
         return size == 0;
     }
-    
+    /*
+     * pre: none
+     * returns the LetterInventory as a string in alphabetical order
+     */
     public String toString()
     {
         StringBuilder toReturn = new StringBuilder();
@@ -99,7 +102,11 @@ public class LetterInventory
         toReturn.size = size + toAdd.size;
         return toReturn;
     }
-    
+    /*
+     * pre: param toSubtract != null
+     * post: return a LetterInventory that subtracts toSubtract from this.
+     * returns null if any value of toReturn is < 0
+     */
     public LetterInventory subtract(LetterInventory toSubtract)
     {
         if(toSubtract == null)
@@ -115,7 +122,10 @@ public class LetterInventory
         toReturn.size = size - toSubtract.size;
         return toReturn;
     }
-    
+    /*
+     * returns if this has all of the same letters as other.
+     * checks if other is an instance of this first, then checks size, then checks each letter.
+     */
     public boolean equals(Object other)
     {
         if (!(other instanceof LetterInventory))

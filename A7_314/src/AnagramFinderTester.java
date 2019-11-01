@@ -6,19 +6,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-/* CS 314 STUDENTS: FILL IN THIS HEADER AND THEN COPY AND PASTE IT TO YOUR
- * LetterInventory.java AND AnagramSolver.java CLASSES.
- *
- * Student information for assignment:
- *
- *  On my honor, <NAME>, this programming assignment is my own work
- *  and I have not provided this code to any other student.
- *
- *  UTEID:
- *  email address:
- *  Grader name:
- *  Number of slip days I am using:
- */
+/* CS 314 STUDENTS: FILL IN THIS HEADER.
+*
+* Student information for assignment:
+*
+*  On my honor, Joey Muffoletto, this programming assignment is my own work
+*  and I have not provided this code to any other student.
+*
+*  UTEID: jrm7925
+*  email address: jrmuff@utexas.edu
+*  Grader name: Andrew
+*  Number of slip days I am using: 0
+*/
 
 public class AnagramFinderTester {
 
@@ -31,125 +30,93 @@ public class AnagramFinderTester {
      * @param args Not used.
      */
     public static void main(String[] args) {
-
-        //letterInventoryTests();
-
         // tests on the anagram solver itself
         //boolean displayAnagrams = getChoiceToDisplayAnagrams();
         AnagramSolver solver = new AnagramSolver(AnagramMain.readWords(dictionaryFileName));
         runAnagramTests(solver, false);
+        cs314StudentTestsForLetterInventory();
     }
-
-    private static void letterInventoryTests() {
-        LetterInventory lets1 = new LetterInventory("");
-        Object expected = 0;
-        Object actual = lets1.size();
-        showTestResults(expected, actual, 1, " size on empty LetterInventory");
-
-        expected = "";
-        actual = lets1.toString();
-        showTestResults(expected, actual, 2, " toString on empty LetterInventory");
-
-        expected = 0;
-        actual = lets1.get('A');
-        showTestResults(expected, actual, 3, " get on empty LetterInventory");
-
-        expected = 0;
-        actual = lets1.get('z');
-        showTestResults(expected, actual, 4, " get on empty LetterInventory");
-
-        expected = true;
-        actual = lets1.isEmpty();
-        showTestResults(expected, actual, 5, " isEmpty on empty LetterInventory");
-
-        expected = "";
-        actual = lets1.toString();
-        showTestResults(expected, actual, 6, " LetterInventory toString on empty LetterInventory");
-
-
-        lets1 = new LetterInventory("mmmmm");
-        expected = "mmmmm";
-        actual = lets1.toString();
-        showTestResults(expected, actual, 7, " LetterInventory toString");
-
-
-        LetterInventory lets2 = new LetterInventory("\"Stanford University\"!! Jr<>(())G");
-        expected = "adefgiijnnorrrssttuvy";
-        actual = lets2.toString();
-        showTestResults(expected, actual, 8, " LetterInventory constructor and toString");
-
-        expected = 21;
-        actual = lets2.size();
-        showTestResults(expected, actual, 9, " LetterInventory size");
-
-        expected = false;
-        actual = lets2.isEmpty();
-        showTestResults(expected, actual, 10, " LetterInventory isEmpty");
-
-        expected = null;
-        actual = lets2.subtract(lets1);
-        showTestResults(expected, actual, 11, "LetterInventory subtract");
-
-        lets1 = new LetterInventory("stand ---- ton");
-        expected = "efgiijrrrsuvy";
-        actual = lets2.subtract(lets1).toString();
-        showTestResults(expected, actual, 12, "LetterInventory subtract");
-
-        expected = 13;
-        actual = lets2.subtract(lets1).size();
-        showTestResults(expected, actual, 13, "LetterInventory size after subtract");
-
-        expected = false;
-        actual = lets2.isEmpty();
-        showTestResults(expected, actual, 14, "LetterInventory isEmpty after subtract");
-
-        expected = null;
-        actual = lets1.subtract(lets2);
-        showTestResults(expected, actual, 15, "LetterInventory subtract");
-
-        expected = false;
-        actual = lets1.equals(lets2);
-        showTestResults(expected, actual, 16, "LetterInventory equals");
-
-        lets1 = new LetterInventory("Ol33vIA33");
-        expected = "aadefgiiijlnnoorrrssttuvvy";
-        LetterInventory lets3 = lets1.add(lets2);
-        actual = lets3.toString();
-        showTestResults(expected, actual, 17, "LetterInventory add");
-
-        expected = 26;
-        actual = lets3.size();
-        showTestResults(expected, actual, 18, "LetterInventory size after add");
-
-        expected = false;
-        actual = lets3.isEmpty();
-        showTestResults(expected, actual, 19, "LetterInventory isEmpty after add");
-
-        lets3 = lets1.add(lets2);
-        LetterInventory lets4 = lets2.add(lets1);
-        showTestResults(lets3, lets4, 20, "LetterInventory add and equals");
-
-        expected = false;
-        StringBuilder foo = new StringBuilder();
-        actual = lets3.equals(foo);
-        showTestResults(expected, actual, 21, "LetterInventory equals");
-
-        expected = false;
-        String str = "abeeills";
-        lets3 = new LetterInventory("ISAbelle!!");
-        actual = lets3.equals(str);
-        showTestResults(expected, actual, 22, "LetterInventory equals");
-
-        expected = true;
-        lets2 = new LetterInventory("\\abeei\"ll0212s");
-        lets3 = new LetterInventory("ISAbelle!!");
-        actual = lets3.equals(lets2);
-        showTestResults(expected, actual, 23, "LetterInventory equals");
-    }
-
+    
     private static void cs314StudentTestsForLetterInventory() {
         // CS314 Students, delete the above tests when you turn in your assignment
         // CS314 Students add your LetterInventory tests here. 
+        Object expected = null;
+        Object actual = null;
+        //constructor
+        
+        LetterInventory let1 = new LetterInventory("joey");
+        LetterInventory let2 = new LetterInventory("muffoletto");
+        
+        
+        //get
+        expected = 1;
+        actual = let1.get('j');
+        showTestResults(expected, actual, 1, "LetterInventory get");
+        expected = 2;
+        actual = let2.get('f');
+        showTestResults(expected, actual, 2, "LetterInventory get");
+        //size
+        expected = 4;
+        actual = let1.size();
+        showTestResults(expected, actual, 3, "LetterInventory size");
+        expected = 10;
+        actual = let2.size();
+        showTestResults(expected, actual, 4, "LetterInventory size");
+        //isEmpty
+        expected = false;
+        actual = let1.isEmpty();
+        showTestResults(expected, actual, 5, "LetterInventory isEmpty");
+        expected = false;
+        actual = let2.isEmpty();
+        showTestResults(expected, actual, 6, "LetterInventory isEmpty");
+        //toString
+        expected = "ejoy";
+        actual = let1.toString();
+        showTestResults(expected, actual, 7, "LetterInventory toString");
+        expected = "efflmoottu";
+        actual = let2.toString();
+        showTestResults(expected, actual, 8, "LetterInventory toString");
+        //add
+        let1 = let1.add(let2);
+        expected = "eeffjlmooottuy";
+        actual = let1.toString();
+        showTestResults(expected, actual, 9, "LetterInventory add");
+        let2 = new LetterInventory("");
+        let2 = let2.add(let1);
+        expected = "eeffjlmooottuy";
+        actual = let2.toString();
+        showTestResults(expected, actual, 10, "LetterInventory add");
+        //subtract
+        let1 = let1.subtract(let2);
+        expected = null;
+        actual = null;
+        showTestResults(expected, actual, 11, "LetterInventory subtract");
+        let2 = let2.subtract(new LetterInventory("eeffy"));
+        expected = "jlmooottu";
+        actual = let2.toString();
+        showTestResults(expected, actual, 12, "LetterInventory subtract");
+        //equals
+        let1 = new LetterInventory("");
+        let2 = new LetterInventory("");
+        expected = true;
+        actual = let1.equals(let2);
+        showTestResults(expected, actual, 13, "LetterInventory equals");
+        let2 = new LetterInventory("Hi my name is joey");
+        let2 = new LetterInventory("Hayyim Jeni Mose !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        expected = true;
+        actual = let2.equals(let2);
+        showTestResults(expected, actual, 14, "LetterInventory equals");
+        //constructor
+        let1 = new LetterInventory("sdfasdfsadf");
+        let2 = new LetterInventory("ddddddddddd");
+        expected = true;
+        actual = let1.size() == let2.size();
+        showTestResults(expected, actual, 15, "LetterInventory constructor");
+        let2 = new LetterInventory("A B C D E F !!!!!!!! 68 49684635213d5438227351!@$#%^&*(*))((**&^%$%&*><?:{}|+_+_+354354354534222a22b");
+
+        expected = "aabbcddef";
+        actual = let2.toString();
+        showTestResults(expected, actual, 16, "LetterInventory constructor");
     }
 
     private static boolean getChoiceToDisplayAnagrams() {
@@ -202,7 +169,6 @@ public class AnagramFinderTester {
                 st.start();
                 // actual results
                 List<List<String>> actualAnagrams = solver.getAnagrams(currentTest.phrase, currentTest.maxWords);
-                System.out.println(solver.recursiveCalls);
                 st.stop();
                 if (checkPassOrFailTest(currentTest, actualAnagrams)) {
                     solverTestCasesPassed++;
