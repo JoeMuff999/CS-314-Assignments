@@ -1,15 +1,17 @@
 /*  Student information for assignment:
  *
- *  On my honor, <NAME>, this programming assignment is my own work
+ *  On my honor, Joey Muffoletto, this programming assignment is my own work
  *  and I have not provided this code to any other student.
  *
- *  UTEID:
- *  email address:
- *  Grader name:
- *  Number of slip days I am using:
+ *  UTEID: jrm7925
+ *  email address: jrmuff@utexas.edu
+ *  Grader name: Andrew
+ *  Number of slip days I am using: 0
  *  
  *  ask about variables names (ie: node "n")
  *  ask about flourless chocolate cake?
+ *  ask about constructor
+ *  ask about the magic booleans and magic numbers (removing from 0 and removing from size()-1)
  */
 
 import java.util.ArrayList;
@@ -28,11 +30,14 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
     private BSTNode<E> root;
     // CS314 students. Add any other instance variables you want here
     private int size;
+    
+    private final boolean rightTree = false;
+    private final boolean leftTree = true;
     // CS314 students. Add a default constructor here.
     
     public BinarySearchTree()
     {
-        //root = new BSTNode<E>(null, null, null);
+        //don't need anything. leaving root as null for my own purposes
     }
     
     /**
@@ -48,12 +53,12 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
     public boolean add(E value) {
         if(value == null)
             throw new IllegalArgumentException("Can't add null");
-        //from class
+        //size changed? from class
         int prevSize = size;
         root = recursiveAdd(root, value);
         return prevSize != size;
     }
-    
+    /* recursively adds valToAdd to the tree. uses the method that Mike showed in class */
     private BSTNode<E> recursiveAdd(BSTNode<E> n, E valToAdd)
     {
         if(n == null)
@@ -87,14 +92,12 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
     public boolean remove(E value) {
         if(value == null)
             throw new IllegalArgumentException("Cannot remove null");
-        
-        //printTree();
+        //size changed?
         int origSize = size;
         root = recursiveRemove(root, value);
-        //printTree();
         return size != origSize;
     }
-   
+   /*recursively removes a val from the tree. Uses the method Mike showed in class */
     private BSTNode<E> recursiveRemove(BSTNode<E> n, E valToRemove)
     {
         if(n == null)
@@ -109,7 +112,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
             if(n.left == null && n.right == null)
             {
                 return null;
-            }
+            }//leaf but one child? return the non null child
             else if(n.left == null && n.right != null)
             {
                 return n.right;
@@ -121,10 +124,12 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
             else //actually hard...make max of left side the new parent and then delete that max node from its original spot.
             {
                 n.data = getMaxOfLeftTree(n.left);
+                //removes the node that is replacing the removed node
                 n.left = recursiveRemove(n.left, n.data);
+                //have to add to size because it will end up being two calls to recursiveRemove which means size-=2
                 size++;
             }
-        }
+        }//continue traversing tree if not equal
         else if(valToRemove.compareTo(n.data) < 0)
         {
             n.left = recursiveRemove(n.left, valToRemove);
@@ -136,7 +141,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
         
         return n;
     }
-    
+    /* returns the value of the max of the left side of the tree */
     private E getMaxOfLeftTree(BSTNode<E> max)
     {
         while(max.right != null)
@@ -161,7 +166,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
         
         return recursiveIsPresent(root, value);
     }
-    
+    /* simple traversal of the tree. returns if node was found */
     private boolean recursiveIsPresent(BSTNode<E> n, E val)
     {
         if(n == null)
@@ -205,10 +210,9 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
      *  @return the height of this tree or -1 if the tree is empty
      */
     public int height() {
-       // System.out.println(recursiveHeight(root));
         return recursiveHeight(root);
     }
-    
+    /* simple traversal of all branches. takes the max of left or right side of tree depending on who has a bigger height */
     private int recursiveHeight(BSTNode<E> n)
     {        
         if(n == null)
@@ -240,11 +244,9 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
      */
     public List<E> getAll() {     
         List<E> result = new ArrayList<>();
-        //printTree();
-        //System.out.println(recursiveGetAll(result, root));
         return recursiveGetAll(result, root);
     }
-    
+    /* simple in order traversal. go alll the way left, then as the stack pops add the middle and right node*/
     private List<E> recursiveGetAll(List<E> result, BSTNode<E> n)
     {
         //in order traversal, really short and simple
@@ -310,9 +312,16 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
     public boolean iterativeAdd(E data) {
         if(data == null)
             throw new IllegalArgumentException("data cannot be null");
-        
+        //base node = new
+        if(root == null)
+        {
+            size++;
+            root = new BSTNode<E>(null, data, null);
+            return true;
+        }
         BSTNode<E> currentNode = root;
         BSTNode<E> parentNode = root;
+        //simple traversal of the tree until we either find val or find a place for it. use parent to track the node above curr
         while(currentNode != null)
         {
             parentNode = currentNode; 
@@ -330,6 +339,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
                 return false;
             }
         }
+        //make a child of parentNode contain data based on data compare to parent.data
         if(data.compareTo(parentNode.data) < 0 )
         {
             parentNode.left = new BSTNode<E>(null, data, null);    
@@ -354,33 +364,30 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
     public E get(int kth) {
         if(0 > kth || kth >= size)
             throw new IllegalArgumentException("kth cannot be greater than or equal to size or less than 0");
-        printTree();
-        System.out.println(recursiveGet(kth, -1, root));
-        return recursiveGet(kth, -1, root);
+        List<E> result = new ArrayList<>();
+        //get the kth node (should be the last node of the list) from result.
+        return recursiveGet(result, root, kth).get(kth);
+    }
+    
+    private List<E> recursiveGet(List<E> result, BSTNode<E> n, int tgtIndex)
+    {
+        //in order traversal, really short and simple
+        if(result.size() > tgtIndex)
+        {
+            //use this to terminate 
+            return result;
+        }                
+        else if(n != null)
+        {
+          //add between the recursive calls so that the parent node gets added in between its left child and right child
+            recursiveGet(result, n.left, tgtIndex);
+            result.add(n.data);            
+            recursiveGet(result, n.right, tgtIndex); 
+        }
+        return result;
+
     }
 
-    private E recursiveGet(int tgtIndex, int index, BSTNode<E> n)
-    {
-        E result = null;
-        if(n == null)
-        {
-            
-        }
-        else if(index == tgtIndex)
-        {
-            return n.data;
-        }
-        else
-        {
-            //pass index as -1 so in case the tgtindex is 0, the root element wont be counted as the first in order element. 
-            //(need to wait until i go all the way left until I start adding to index
-            recursiveGet(tgtIndex, -1, n.left);
-            System.out.println(n.data);
-            result = recursiveGet(tgtIndex, index + 1 , n.right);
-        }           
-        return result;
-        
-    }
 
     /**
      * Return a List with all values in this Binary Search Tree that are less than
@@ -391,8 +398,96 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
      * no values in this tree less than value return an empty list. The elements of the list are in ascending order.
      */
     public List<E> getAllLessThan(E value) {
-        return null;
+        if(value == null)
+            throw new IllegalArgumentException("yea you can't find a null value");
+        //make sure root is not null before getting the list
+        if(root == null)
+            return new ArrayList<E>(); //return empty
+        return iterativeLessThan(value);
     }
+    /* hybrid way of getting less than values. Finds the first node thats greater than val. While finding this node, creates a list of all parent nodes
+     * (we know that all parent nodes must be less than val). The next step, once we found the first node greater than val, is to look at the left tree of this node
+     * to see if any children happen to be less than val. if so, add the left tree of these nodes to the above parent node list. at the end, use a recursiveGetAll method (in order traversal)
+     * on each node we added to the list. Ensures that recursion is limited to nodes that are 100% going to be less than value. 
+     * returns the list of all values less than.
+     */
+    private List<E> iterativeLessThan(E val)
+    {
+     // an iterative way of getting greater than nodes. Should be faster than recursion because no flourless calls.
+        //i also understand that I could've just done an in order traversal and then terminated once i reached a node greater than val, but thats boring :)
+        BSTNode<E> firstNodeGreaterThanVal = root;
+        List<BSTNode<E>> listOfNodesToAddLeftSubtree = new ArrayList<>();
+        //find first node greater than val
+        while(firstNodeGreaterThanVal.data.compareTo(val) <= 0)
+        {
+            listOfNodesToAddLeftSubtree.add(firstNodeGreaterThanVal);
+            if(firstNodeGreaterThanVal.data.compareTo(val) == 0)
+            {                            
+                return handleEquals(listOfNodesToAddLeftSubtree, leftTree);
+            }           
+            
+            firstNodeGreaterThanVal = firstNodeGreaterThanVal.right;
+            //check for null
+            if(firstNodeGreaterThanVal == null)
+                return getLeftSubtree(listOfNodesToAddLeftSubtree);            
+        }
+        
+        //now account for the possibility that the left subtree of this node (which is greater than val) could be less than val.
+        firstNodeGreaterThanVal = firstNodeGreaterThanVal.left;
+        while(firstNodeGreaterThanVal != null)
+        {
+            //less than val? add entire left subtree then go right
+            if(firstNodeGreaterThanVal.data.compareTo(val) <  0)
+            {
+                listOfNodesToAddLeftSubtree.add(firstNodeGreaterThanVal); 
+                firstNodeGreaterThanVal = firstNodeGreaterThanVal.right;
+            }
+            else if(firstNodeGreaterThanVal.data.compareTo(val) >  0)//greater than? go left
+            {
+                firstNodeGreaterThanVal = firstNodeGreaterThanVal.left;
+            }
+            else //equal to (do this for earliest return possible in the event you find a node equal to the cutoff
+            {
+                listOfNodesToAddLeftSubtree.add(firstNodeGreaterThanVal);
+                return handleEquals(listOfNodesToAddLeftSubtree, leftTree);
+            }
+        }
+        return getLeftSubtree(listOfNodesToAddLeftSubtree);
+    }
+    /* method for handling the case when we reach a node == val. condenses code. 
+     * returns the list of all nodes less than or greater than depending on the boolean flag "isLeft" (isLeft == true indicates less than).
+     */
+    private List<E> handleEquals(List<BSTNode<E>> listOfNodes, boolean isLeft){
+      
+        //the removals are necessary because the way my get___Subtree method works is that each node will be added to the list along with its left or right tree children.
+       //the node that equals val will also be added (as a result of the logic). the most efficient way to remedy this is to remove the node. It will be the largest node
+        //for the lessThan method, and the smallest node for the greaterThan method.
+        List<E> result = new ArrayList<>();
+        if(isLeft){
+            result = getLeftSubtree(listOfNodes);
+            result.remove(result.size()-1);
+        }
+        else
+        {
+            result = getRightSubtree(listOfNodes);
+            result.remove(0);
+        }        
+        return result;
+    }
+    /*returns an inorder list of the leftSubtree for a list of nodes. */
+    private List<E> getLeftSubtree(List<BSTNode<E>> listOfNodes)
+    {
+        List<E> result = new ArrayList<>();
+        for(int i = 0; i < listOfNodes.size(); i++)
+        {           
+            result = recursiveGetAll(result, listOfNodes.get(i).left);
+            //add parent (will be greater than all of left sub tree thats being added)
+            result.add(listOfNodes.get(i).data);
+        }
+        return result;
+    } 
+
+    
 
 
     /**
@@ -404,7 +499,70 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
      * no values in this tree greater than value return an empty list. The elements of the list are in ascending order.
      */
     public List<E> getAllGreaterThan(E value) {
-        return null;
+        if(value == null)
+            throw new IllegalArgumentException("yea you can't find a null value");   
+        if(root == null)
+            return new ArrayList<E>();//return empty
+        return iterativeGreaterThan(value);
+    }
+    /*once again, a hybrid way of getting greater than values. First finds the first node that is less than val. All parent nodes can be assumed to be greater than val, so add these
+     * to our list of BSTNodes. Now, find out if any children if this "first node" in the right subtree happen to be greater than val. Iteratively find them and add them to BSTNode list.
+     * returns the list of values greater than val.
+     */
+    private List<E> iterativeGreaterThan(E val){
+        // an iterative way of getting greater than nodes. Should be faster than recursion because no flourless calls.
+        BSTNode<E> firstNodeLessThanVal = root;
+        List<BSTNode<E>> listOfNodesToAddRightSubtree = new ArrayList<>();
+        //find first node less than val
+        while(firstNodeLessThanVal.data.compareTo(val) >= 0)
+        {
+            listOfNodesToAddRightSubtree.add(firstNodeLessThanVal);
+            if(firstNodeLessThanVal.data.compareTo(val) == 0)
+            {            
+                //must be done this way to remove first node
+                return handleEquals(listOfNodesToAddRightSubtree, rightTree);
+            }           
+            
+            firstNodeLessThanVal = firstNodeLessThanVal.left;
+            //check for null
+            if(firstNodeLessThanVal == null)
+                return getRightSubtree(listOfNodesToAddRightSubtree);            
+        }
+        
+        //now account for the possibility that a the right subtree of this node (which is smaller than val) could be greater than val.
+        firstNodeLessThanVal = firstNodeLessThanVal.right;
+        while(firstNodeLessThanVal != null)
+        {
+            //less than or equal to val? go right
+            if(firstNodeLessThanVal.data.compareTo(val) <  0)
+            {
+                firstNodeLessThanVal = firstNodeLessThanVal.right;
+            }
+            else if(firstNodeLessThanVal.data.compareTo(val) >  0) //greater than? add entire right subtree and go left
+            {
+                listOfNodesToAddRightSubtree.add(firstNodeLessThanVal); 
+                firstNodeLessThanVal = firstNodeLessThanVal.left;
+            }
+            else //equals
+            {
+                listOfNodesToAddRightSubtree.add(firstNodeLessThanVal);
+                return handleEquals(listOfNodesToAddRightSubtree, rightTree);
+            }
+        }
+        return getRightSubtree(listOfNodesToAddRightSubtree);
+    }
+    /* returns an in order list of the rightSubtree for a given list of nodes. */
+    private List<E> getRightSubtree(List<BSTNode<E>> listOfNodes)
+    {
+        List<E> result = new ArrayList<>();
+        //go backwards in list because we added them in descending order.
+        for(int i = listOfNodes.size()-1; i >= 0; i--)
+        {
+            //add parent (will be smaller than all of right sub tree thats being added)
+            result.add(listOfNodes.get(i).data);
+            result = recursiveGetAll(result, listOfNodes.get(i).right);
+        }
+        return result;
     }
 
 
@@ -420,6 +578,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
         return recursiveDepth(d, 0, root);
     }
     
+    /*returns the depth for a given level through recursion */
     private int recursiveDepth(int tgt, int currDepth, BSTNode<E> n)
     {
         int result = 0;
@@ -433,6 +592,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
         }
         else if(currDepth < tgt)
         {
+            //top level result will add up all calls that return 1 (any node at the tgt level)
             result += recursiveDepth(tgt, currDepth + 1, n.left) + recursiveDepth(tgt, currDepth + 1, n.right);
         }
         return result;
