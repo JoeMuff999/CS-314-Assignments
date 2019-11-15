@@ -8,10 +8,7 @@
  *  Grader name: Andrew
  *  Number of slip days I am using: 0
  *  
- *  ask about variables names (ie: node "n")
- *  ask about flourless chocolate cake?
- *  ask about constructor
- *  ask about the magic booleans and magic numbers (removing from 0 and removing from size()-1)
+
  */
 
 import java.util.ArrayList;
@@ -31,8 +28,8 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
     // CS314 students. Add any other instance variables you want here
     private int size;
     
-    private final boolean rightTree = false;
-    private final boolean leftTree = true;
+    private final boolean RIGHT_TREE = false;
+    private final boolean LEFT_TREE = true;
     // CS314 students. Add a default constructor here.
     
     public BinarySearchTree()
@@ -100,44 +97,43 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
    /*recursively removes a val from the tree. Uses the method Mike showed in class */
     private BSTNode<E> recursiveRemove(BSTNode<E> n, E valToRemove)
     {
-        if(n == null)
+        if(n != null)
         {
-            
-        }
-        else if(n.data.equals(valToRemove))
-        {
+        	 if(n.data.equals(valToRemove))
+             {
 
-            size--;
-            //is it a leaf ? ez pz
-            if(n.left == null && n.right == null)
-            {
-                return null;
-            }//leaf but one child? return the non null child
-            else if(n.left == null && n.right != null)
-            {
-                return n.right;
-            }
-            else if(n.right == null && n.left != null)
-            {
-                return n.left;
-            }
-            else //actually hard...make max of left side the new parent and then delete that max node from its original spot.
-            {
-                n.data = getMaxOfLeftTree(n.left);
-                //removes the node that is replacing the removed node
-                n.left = recursiveRemove(n.left, n.data);
-                //have to add to size because it will end up being two calls to recursiveRemove which means size-=2
-                size++;
-            }
-        }//continue traversing tree if not equal
-        else if(valToRemove.compareTo(n.data) < 0)
-        {
-            n.left = recursiveRemove(n.left, valToRemove);
-        }
-        else if(valToRemove.compareTo(n.data) > 0)
-        {
-            n.right = recursiveRemove(n.right, valToRemove);
-        }
+                 size--;
+                 //is it a leaf ? ez pz
+                 if(n.left == null && n.right == null)
+                 {
+                     return null;
+                 }//leaf but one child? return the non null child
+                 else if(n.left == null && n.right != null)
+                 {
+                     return n.right;
+                 }
+                 else if(n.right == null && n.left != null)
+                 {
+                     return n.left;
+                 }
+                 else //actually hard...make max of left side the new parent and then delete that max node from its original spot.
+                 {
+                     n.data = getMaxOfLeftTree(n.left);
+                     //removes the node that is replacing the removed node
+                     n.left = recursiveRemove(n.left, n.data);
+                     //have to add to size because it will end up being two calls to recursiveRemove which means size-=2
+                     size++;
+                 }
+             }//continue traversing tree if not equal
+             else if(valToRemove.compareTo(n.data) < 0)
+             {
+                 n.left = recursiveRemove(n.left, valToRemove);
+             }
+             else if(valToRemove.compareTo(n.data) > 0)
+             {
+                 n.right = recursiveRemove(n.right, valToRemove);
+             }
+        }      
         
         return n;
     }
@@ -423,7 +419,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
             listOfNodesToAddLeftSubtree.add(firstNodeGreaterThanVal);
             if(firstNodeGreaterThanVal.data.compareTo(val) == 0)
             {                            
-                return handleEquals(listOfNodesToAddLeftSubtree, leftTree);
+                return handleEquals(listOfNodesToAddLeftSubtree, LEFT_TREE);
             }           
             
             firstNodeGreaterThanVal = firstNodeGreaterThanVal.right;
@@ -449,7 +445,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
             else //equal to (do this for earliest return possible in the event you find a node equal to the cutoff
             {
                 listOfNodesToAddLeftSubtree.add(firstNodeGreaterThanVal);
-                return handleEquals(listOfNodesToAddLeftSubtree, leftTree);
+                return handleEquals(listOfNodesToAddLeftSubtree, LEFT_TREE);
             }
         }
         return getLeftSubtree(listOfNodesToAddLeftSubtree);
@@ -520,7 +516,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
             if(firstNodeLessThanVal.data.compareTo(val) == 0)
             {            
                 //must be done this way to remove first node
-                return handleEquals(listOfNodesToAddRightSubtree, rightTree);
+                return handleEquals(listOfNodesToAddRightSubtree, RIGHT_TREE);
             }           
             
             firstNodeLessThanVal = firstNodeLessThanVal.left;
@@ -546,7 +542,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
             else //equals
             {
                 listOfNodesToAddRightSubtree.add(firstNodeLessThanVal);
-                return handleEquals(listOfNodesToAddRightSubtree, rightTree);
+                return handleEquals(listOfNodesToAddRightSubtree, RIGHT_TREE);
             }
         }
         return getRightSubtree(listOfNodesToAddRightSubtree);
@@ -582,19 +578,19 @@ public class BinarySearchTree<E extends Comparable<? super E>> {
     private int recursiveDepth(int tgt, int currDepth, BSTNode<E> n)
     {
         int result = 0;
-        if(n == null)
+        
+        if(n != null)
         {
-            
-        }
-        else if(n != null && currDepth == tgt)
-        {
-            return 1;
-        }
-        else if(currDepth < tgt)
-        {
-            //top level result will add up all calls that return 1 (any node at the tgt level)
-            result += recursiveDepth(tgt, currDepth + 1, n.left) + recursiveDepth(tgt, currDepth + 1, n.right);
-        }
+        	if(n != null && currDepth == tgt)
+            {
+                return 1;
+            }
+            else if(currDepth < tgt)
+            {
+                //top level result will add up all calls that return 1 (any node at the tgt level)
+                result += recursiveDepth(tgt, currDepth + 1, n.left) + recursiveDepth(tgt, currDepth + 1, n.right);
+            }
+        }        
         return result;
     }
 
