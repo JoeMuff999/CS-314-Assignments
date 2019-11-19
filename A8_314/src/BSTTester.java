@@ -9,7 +9,6 @@
  *  Number of slip days I am using: 0
  */
 
-
 /*
  * Place results of experiments here:
  * UNSORTED ADD RESULTS ::
@@ -515,7 +514,6 @@ will perform these operations in log(n) time.
 * 
  */
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -528,17 +526,19 @@ import java.util.TreeSet;
  * Some test cases for CS314 Binary Search Tree assignment.
  *
  */
-public class BSTTester {
+public class BSTTester
+{
 
     /**
      * The main method runs the tests.
      * @param args Not used
      */
-    public static void main(String[] args) {        
+    public static void main(String[] args)
+    {
         //runExperiments();
         myTests();
     }
-    
+
     private static void myTests()
     {
         BinarySearchTree<Integer> test = new BinarySearchTree<>();
@@ -547,24 +547,24 @@ public class BSTTester {
         showTestResults(test.size() == 1, 3);
         showTestResults(test.get(0) == 9, 4);
         showTestResults(test.remove(9), 5);
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             test.add(i);
         }
         boolean answer = true;
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
-            if(test.add(i))
+            if (test.add(i))
                 answer = false;
             test.remove(i);
         }
-        showTestResults(answer,6);
-        showTestResults(test.size() == 0,7);
-        int[] f = new int[] {9,3,5,7,-1,-5,100,2,10};
+        showTestResults(answer, 6);
+        showTestResults(test.size() == 0, 7);
+        int[] f = new int[] { 9, 3, 5, 7, -1, -5, 100, 2, 10 };
         List<Integer> expected = new ArrayList<>();
-        
-        for(int i = 0; i < f.length; i++)
-        {            
+
+        for (int i = 0; i < f.length; i++)
+        {
             test.add(f[i]);
             expected.add(f[i]);
         }
@@ -590,9 +590,9 @@ public class BSTTester {
         expected.add(100);
         showTestResults(test.getAllGreaterThan(7).equals(expected), 16);
         showTestResults(test.get(0) == -5, 17);
-        showTestResults(test.get(test.size()-1) == 100, 18);
+        showTestResults(test.get(test.size() - 1) == 100, 18);
         showTestResults(test.remove(100), 19);
-        showTestResults(test.get(test.size()-1) == 10, 20);
+        showTestResults(test.get(test.size() - 1) == 10, 20);
         showTestResults(test.remove(9), 21);
         expected = new ArrayList<>();
         expected.add(5);
@@ -607,7 +607,7 @@ public class BSTTester {
         test.remove(2);
         test.remove(10);
         expected = new ArrayList<>();
-        for(int i = 0; i < f.length; i++)
+        for (int i = 0; i < f.length; i++)
         {
             test.add(f[i]);
             expected.add(f[i]);
@@ -621,24 +621,23 @@ public class BSTTester {
         boolean result = true;
         int maxInt = 0;
         int minInt = 0;
-        for(int i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            
+
             int j = r.nextInt();
-            maxInt = Math.max(maxInt,j);
-            minInt = Math.min(minInt,j);
-            if(!test.iterativeAdd(j))
+            maxInt = Math.max(maxInt, j);
+            minInt = Math.min(minInt, j);
+            if (!test.iterativeAdd(j))
                 result = false;
-            if(j < 0)
+            if (j < 0)
             {
                 lessExpected.add(j);
-            }
-            else if(j > 0)
+            } else if (j > 0)
             {
                 greaterExpected.add(j);
             }
         }
-        
+
         Collections.sort(greaterExpected);
         showTestResults(test.getAllGreaterThan(0).equals(greaterExpected), 26);
         Collections.sort(lessExpected);
@@ -647,139 +646,137 @@ public class BSTTester {
         showTestResults(maxInt == test.max(), 29);
         showTestResults(minInt == test.min(), 30);
         test = new BinarySearchTree<>();
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             test.iterativeAdd(i);
         }
-        showTestResults(!test.iterativeAdd(5),31);
+        showTestResults(!test.iterativeAdd(5), 31);
         boolean resultHeightTest = true;
-        for(int i = 0; i < test.height(); i++)
+        for (int i = 0; i < test.height(); i++)
         {
-            if(test.numNodesAtDepth(i) != 1)
+            if (test.numNodesAtDepth(i) != 1)
                 resultHeightTest = false;
         }
         showTestResults(resultHeightTest, 32);
         showTestResults(test.height() == 9, 33);
-        
-        
-       
-        
+
     }
+
     private static void runExperiments()
     {
         Stopwatch s = new Stopwatch();
-        
-        int[] lim = new int[] {1,2,4,8,16,32,64,128,256,512,1024};
-//        for(int n : lim)
-//        {
-//            n = n * 1000;
-//            double avgTime = 0;
-//            double avgHeight = 0;
-//            double avgSize = 0;
-//            for(int i = 1; i < 11; i++)
-//            {
-//                Random r = new Random();
-//                BinarySearchTree<Integer> tree = new BinarySearchTree<>();
-//                s.start();
-//                for(int j = 0; j < n; j++)
-//                {
-//                    tree.add(new Integer(r.nextInt()));                    
-//                }
-//                s.stop();
-//                avgTime += s.time();
-//                avgHeight += tree.height();
-//                avgSize += tree.size();
-//                System.out.println("Test " + i + " for " + n + " adds stats:: " + "Time = "+ s.time() + " seconds, Height = " + tree.height() + ", Size = " + tree.size());
-//            }
-//            System.out.println("Average for " + n + " additions:: " + "AvgTime = " + avgTime/10 + ", AvgHeight = " + avgHeight/10 + ", AvgSize = " + avgSize/10 + "\n");
-//            
-//        }
-        
-//        //tree set
-//        for(int n : lim)
-//        {
-//            n = n * 1000;
-//            double avgTime = 0;
-//            for(int i = 1; i < 11; i++)
-//            {
-//                Random r = new Random();
-//                TreeSet<Integer> tree = new TreeSet<>();
-//                s.start();
-//                for(int j = 0; j < n; j++)
-//                {
-//                    tree.add(new Integer(r.nextInt()));                    
-//                }
-//                s.stop();
-//                avgTime += s.time();
-//                System.out.println("Test " + i + " for " + n + " adds to a TreeSet takes " + s.time() + " seconds");
-//            }
-//            System.out.println("Average for " + n + " additions to a TreeSet:: " + "AvgTime = " + avgTime/10);
-//            
-//        }
-        
+
+        int[] lim = new int[] { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+        //        for(int n : lim)
+        //        {
+        //            n = n * 1000;
+        //            double avgTime = 0;
+        //            double avgHeight = 0;
+        //            double avgSize = 0;
+        //            for(int i = 1; i < 11; i++)
+        //            {
+        //                Random r = new Random();
+        //                BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        //                s.start();
+        //                for(int j = 0; j < n; j++)
+        //                {
+        //                    tree.add(new Integer(r.nextInt()));                    
+        //                }
+        //                s.stop();
+        //                avgTime += s.time();
+        //                avgHeight += tree.height();
+        //                avgSize += tree.size();
+        //                System.out.println("Test " + i + " for " + n + " adds stats:: " + "Time = "+ s.time() + " seconds, Height = " + tree.height() + ", Size = " + tree.size());
+        //            }
+        //            System.out.println("Average for " + n + " additions:: " + "AvgTime = " + avgTime/10 + ", AvgHeight = " + avgHeight/10 + ", AvgSize = " + avgSize/10 + "\n");
+        //            
+        //        }
+
+        //        //tree set
+        //        for(int n : lim)
+        //        {
+        //            n = n * 1000;
+        //            double avgTime = 0;
+        //            for(int i = 1; i < 11; i++)
+        //            {
+        //                Random r = new Random();
+        //                TreeSet<Integer> tree = new TreeSet<>();
+        //                s.start();
+        //                for(int j = 0; j < n; j++)
+        //                {
+        //                    tree.add(new Integer(r.nextInt()));                    
+        //                }
+        //                s.stop();
+        //                avgTime += s.time();
+        //                System.out.println("Test " + i + " for " + n + " adds to a TreeSet takes " + s.time() + " seconds");
+        //            }
+        //            System.out.println("Average for " + n + " additions to a TreeSet:: " + "AvgTime = " + avgTime/10);
+        //            
+        //        }
+
         //BST sorted order
-//      for(int n : lim)
-//      {
-//          n = n * 1000;
-//          double avgTime = 0;
-//          double avgHeight = 0;
-//          double avgSize = 0;
-//          for(int i = 1; i < 11; i++)
-//          {
-//              BinarySearchTree<Integer> tree = new BinarySearchTree<>();
-//              s.start();
-//              for(int j = 0; j < n; j++)
-//              {
-//                  if(n < 32000)
-//                      tree.add(j);
-//                  else
-//                      tree.iterativeAdd(j);                    
-//              }
-//              s.stop();
-//              avgTime += s.time();
-//              if(n < 32000)
-//              {
-//                  avgHeight += tree.height();    
-//                  System.out.println("Test " + i + " for " + n + " adds in SORTED ORDER. stats:: " + "Time = "+ s.time() + " seconds, Height = " + tree.height() + ", Size = " + tree.size());
-//              }
-//              else
-//              { 
-//                  System.out.println("Test " + i + " for " + n + " adds in SORTED ORDER. stats:: " + "Time = "+ s.time() + " seconds, Height = " + "XXX" + ", Size = " + tree.size());
-//              }
-//              avgSize += tree.size();
-//                  
-//             
-//          }
-//          System.out.println("Average for " + n + " sorted additions:: " + "AvgTime = " + avgTime/10 + ", AvgHeight = " + avgHeight/10 + ", AvgSize = " + avgSize/10 + "\n");          
-//      }
+        //      for(int n : lim)
+        //      {
+        //          n = n * 1000;
+        //          double avgTime = 0;
+        //          double avgHeight = 0;
+        //          double avgSize = 0;
+        //          for(int i = 1; i < 11; i++)
+        //          {
+        //              BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        //              s.start();
+        //              for(int j = 0; j < n; j++)
+        //              {
+        //                  if(n < 32000)
+        //                      tree.add(j);
+        //                  else
+        //                      tree.iterativeAdd(j);                    
+        //              }
+        //              s.stop();
+        //              avgTime += s.time();
+        //              if(n < 32000)
+        //              {
+        //                  avgHeight += tree.height();    
+        //                  System.out.println("Test " + i + " for " + n + " adds in SORTED ORDER. stats:: " + "Time = "+ s.time() + " seconds, Height = " + tree.height() + ", Size = " + tree.size());
+        //              }
+        //              else
+        //              { 
+        //                  System.out.println("Test " + i + " for " + n + " adds in SORTED ORDER. stats:: " + "Time = "+ s.time() + " seconds, Height = " + "XXX" + ", Size = " + tree.size());
+        //              }
+        //              avgSize += tree.size();
+        //                  
+        //             
+        //          }
+        //          System.out.println("Average for " + n + " sorted additions:: " + "AvgTime = " + avgTime/10 + ", AvgHeight = " + avgHeight/10 + ", AvgSize = " + avgSize/10 + "\n");          
+        //      }
 
-//      //tree set
-//      for(int n : lim)
-//      {
-//          n = n * 1000;
-//          double avgTime = 0;
-//          for(int i = 1; i < 11; i++)
-//          {
-//              TreeSet<Integer> tree = new TreeSet<>();
-//              s.start();
-//              for(int j = 0; j < n; j++)
-//              {
-//                  tree.add(j);                    
-//              }
-//              s.stop();
-//              avgTime += s.time();
-//              System.out.println("Test " + i + " for " + n + " SORTED adds to a TreeSet takes " + s.time() + " seconds");
-//          }
-//          System.out.println("Average for " + n + " SORTED additions to a TreeSet:: " + "AvgTime = " + avgTime/10 + "\n");
-//          
-//      }  
+        //      //tree set
+        //      for(int n : lim)
+        //      {
+        //          n = n * 1000;
+        //          double avgTime = 0;
+        //          for(int i = 1; i < 11; i++)
+        //          {
+        //              TreeSet<Integer> tree = new TreeSet<>();
+        //              s.start();
+        //              for(int j = 0; j < n; j++)
+        //              {
+        //                  tree.add(j);                    
+        //              }
+        //              s.stop();
+        //              avgTime += s.time();
+        //              System.out.println("Test " + i + " for " + n + " SORTED adds to a TreeSet takes " + s.time() + " seconds");
+        //          }
+        //          System.out.println("Average for " + n + " SORTED additions to a TreeSet:: " + "AvgTime = " + avgTime/10 + "\n");
+        //          
+        //      }  
     }
-    
 
-    private static void showTestResults(boolean passed, int testNum) {
-        if( passed )
-            System.out.println( "Test " + testNum + " passed.");
+    private static void showTestResults(boolean passed, int testNum)
+    {
+        if (passed)
+            System.out.println("Test " + testNum + " passed.");
         else
-            System.out.println( "TEST " + testNum + " FAILED. ************************");
+            System.out.println("TEST " + testNum + " FAILED. ************************");
     }
 }
