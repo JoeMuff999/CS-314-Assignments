@@ -1,12 +1,12 @@
 /*  Student information for assignment:
  *
- *  On my honor, <NAME>, this programming assignment is my own work
+ *  On my honor, <Joey>, this programming assignment is my own work
  *  and I have not provided this code to any other student.
  *
- *  UTEID:
- *  email address:
- *  Grader name:
- *  Number of slip days I am using:
+ *  UTEID: jrm7925
+ *  email address: jrmuff@utexas.edu
+ *  Grader name: Andrew 
+ *  Number of slip days I am using: none
  */
 
 
@@ -38,7 +38,8 @@ import java.util.TreeSet;
  *
  */
 
-public class FootballRanker {
+public class FootballRanker
+{
 
     // only include teams in final rankings with this many wins
     private static final int MIN_WINS = 7;
@@ -65,7 +66,6 @@ public class FootballRanker {
     private Map<String, FootballRecord> records;
     private List<String> actualRanks;
 
-
     /**
      * Create a new FootballRanker based on the given files.
      * Format of file is:
@@ -76,18 +76,16 @@ public class FootballRanker {
      * @param gameResults The name of the file with the results from games.
      * @param actualRanks The name of the file with the final end of season rankings.
      */
-    public FootballRanker(String gameResults, String actualRanks) {
-        if(gameResults == null || actualRanks == null)
-            throw new IllegalArgumentException("Violation of precondition. " +
-                    "File names may not be null.");
+    public FootballRanker(String gameResults, String actualRanks)
+    {
+        if (gameResults == null || actualRanks == null)
+            throw new IllegalArgumentException("Violation of precondition. " + "File names may not be null.");
 
         records = new HashMap<String, FootballRecord>();
         teamsAndResults = buildGraph(gameResults);
         this.actualRanks = getActual(actualRanks);
 
-
     }
-
 
     /**
      * Calculate top teams based solely on average path length of unweighted shortest paths.
@@ -95,17 +93,17 @@ public class FootballRanker {
      * @return the root mean square error of the top 25 teams based on this calculation
      * rounded to 1 decimal place.
      */
-    public double doUnweighted(boolean showResults) {
-        if(showResults)
+    public double doUnweighted(boolean showResults)
+    {
+        if (showResults)
             System.out.print("\n\n ***** RESULTS BASED ON UNWEIGHTED WINS *****");
         teamsAndResults.findAllPaths(false);
         TreeSet<AllPathsInfo> paths = teamsAndResults.getAllPaths();
         paths = rankByScore(paths);
-        if(showResults)
+        if (showResults)
             showResults(paths);
         return printRootMeanSquareError(actualRanks, paths, showResults);
     }
-
 
     /**
      * Calculate top teams based on average path length of weighted shortest paths.
@@ -114,13 +112,14 @@ public class FootballRanker {
      * @return the root mean square error of the top 25 teams based on this calculation
      * rounded to 1 decimal place.
      */
-    public double doWeighted(boolean showResults) {
-        if(showResults)
+    public double doWeighted(boolean showResults)
+    {
+        if (showResults)
             System.out.print("\n\n ***** RESULTS BASED ON WEIGHTED WINS *****");
         teamsAndResults.findAllPaths(true);
         TreeSet<AllPathsInfo> paths = teamsAndResults.getAllPaths();
         paths = rankByScore(paths);
-        if(showResults)
+        if (showResults)
             showResults(paths);
         return printRootMeanSquareError(actualRanks, paths, showResults);
     }
@@ -132,25 +131,26 @@ public class FootballRanker {
      * @return the root mean square error of the top 25 teams based on this calculation
      * rounded to 1 decimal place.
      */
-    public double doWeightedAndWinPercentAdjusted(boolean showResults) {
-        if(showResults)
+    public double doWeightedAndWinPercentAdjusted(boolean showResults)
+    {
+        if (showResults)
             System.out.print("\n\n ***** RESULTS BASED ON WEIGHTED WINS ADJUSTED BY WIN PERCENTAGE *****");
         teamsAndResults.findAllPaths(true);
         TreeSet<AllPathsInfo> paths = teamsAndResults.getAllPaths();
         paths = rankByScoreAdjustWinPercentage(paths);
-        if(showResults)
+        if (showResults)
             showResults(paths);
         return printRootMeanSquareError(actualRanks, paths, showResults);
     }
 
     // show results of calculations
-    private void showResults(Set<AllPathsInfo> paths) {
+    private void showResults(Set<AllPathsInfo> paths)
+    {
         System.out.println("\n\n***** TOP TEAMS *****");
         int rank = 1;
-        for(AllPathsInfo team : paths)
-                System.out.println("predicted rank: " + (rank++) + ", " + team);
+        for (AllPathsInfo team : paths)
+            System.out.println("predicted rank: " + (rank++) + ", " + team);
     }
-
 
     /*
      * Calculate difference between predicted results based on graph and actual results of
@@ -158,84 +158,89 @@ public class FootballRanker {
      * predicted results from graph.
      * If showResults is true print results to standard output.
      */
-    private double printRootMeanSquareError(List<String> humanRanks,
-                    TreeSet<AllPathsInfo> paths, boolean showResults) {
-        if(showResults)
+    private double printRootMeanSquareError(List<String> humanRanks, TreeSet<AllPathsInfo> paths, boolean showResults)
+    {
+        if (showResults)
             System.out.println("\n\n ***** PREDICTED VS. ACTUAL RESULTS *****");
-        
+
         // CS314 STUDENTS - COMPLETE THIS METHOD
-        double result = 0;        
-        for(int i = 0; i < humanRanks.size(); i++)
-        {         
+        double result = 0;
+        for (int i = 0; i < humanRanks.size(); i++) //iterate over human ranks
+        {
             Iterator<AllPathsInfo> it = paths.iterator();
-            String currTeam = humanRanks.get(i);              
+            String currTeam = humanRanks.get(i);
             int apRank = i + 1;
             boolean found = false;
             int graphRank = 1;
-            while(!found && it.hasNext())
+            while (!found && it.hasNext()) //iterate over entire graph looking for the humanRank
             {
-                if(it.next().getName().equals(currTeam))
-                    found = true; 
+                if (it.next().getName().equals(currTeam))
+                    found = true;
                 else
                     graphRank++;
             }
-            if(!found)
+            if (!found) //if not present, considers it to be of 1 rank outside of graph.size
                 graphRank = paths.size() + 1;
-            double diff = apRank - graphRank;
-            result += (diff * diff);
-            if(showResults)
+            double diff = apRank - graphRank;//get diff
+            result += (diff * diff); //squared sum
+            if (showResults)
                 printRes(currTeam, apRank, graphRank);
         }
-        result = Math.sqrt(result/humanRanks.size());
-        if(showResults)
+        result = Math.sqrt(result / humanRanks.size()); //sqrt
+        if (showResults)
             System.out.println("Root Mean Square Error: " + ourFormatter.format(result));
-        DecimalFormat df = new DecimalFormat("0.0");
+        DecimalFormat df = new DecimalFormat("0.0"); //use df to format output
         return Double.parseDouble(df.format(result));
     }
-    
+
+    /*
+     * helper method for printing results
+     */
     private void printRes(String currTeam, int apRank, int graphRank)
     {
         StringBuilder res = new StringBuilder(currTeam);
-        for(int i = currTeam.length(); i < PADDING; i++)
+        for (int i = currTeam.length(); i < PADDING; i++)
             res.append(" ");
         System.out.println(res.toString() + " - actual rank: " + apRank + " predicted rank: " + graphRank);
     }
 
-
-    public void processRequests() {
+    public void processRequests()
+    {
         Scanner in = new Scanner(System.in);
-        do {
+        do
+        {
             System.out.print("\nEnter starting team: ");
             String start = in.nextLine().trim();
-            if(teamsAndResults.containsVertex(start)) {
+            if (teamsAndResults.containsVertex(start))
+            {
                 teamsAndResults.findUnweightedShortestPath(start);
-                do {
+                do
+                {
                     System.out.println("Finding paths from " + start);
                     System.out.print("\nEnter ending team: ");
                     String end = in.nextLine().trim();
-                    if(teamsAndResults.containsVertex(end)) {
+                    if (teamsAndResults.containsVertex(end))
+                    {
                         teamsAndResults.printPath(end);
-                    }
-                    else
+                    } else
                         System.out.println("\n" + end + " is not a team");
-                } while(another(in, "Do you want to find another path from " + start + "?"));
-            }
-            else
+                } while (another(in, "Do you want to find another path from " + start + "?"));
+            } else
                 System.out.println("\n" + start + " is not a team");
-        } while(another(in, "Do you want to look for more paths between teams?"));
+        } while (another(in, "Do you want to look for more paths between teams?"));
     }
 
     /**
      * Show the longest path in the graph based on games played.
      */
-    public void showLongest() {
+    public void showLongest()
+    {
         System.out.println();
         System.out.println(teamsAndResults.getLongestPath());
     }
 
-
-
-    private boolean another(Scanner in, String prompt) {
+    private boolean another(Scanner in, String prompt)
+    {
         System.out.println(prompt);
         System.out.print("Enter y for yes, anything else for no: ");
         String answer = in.nextLine().trim().toLowerCase();
@@ -243,19 +248,21 @@ public class FootballRanker {
         return answer != null && answer.length() > 0 && answer.charAt(0) == 'y';
     }
 
-
-    private List<String> getActual(String filename) {
+    private List<String> getActual(String filename)
+    {
         List<String> result = new ArrayList<String>();
-        try{
+        try
+        {
             Scanner sc = new Scanner(new File(filename));
-            while(sc.hasNext()) {
+            while (sc.hasNext())
+            {
                 String temp = sc.nextLine().trim();
                 result.add(temp);
 
             }
             sc.close();
-        }
-        catch(IOException e) {
+        } catch (IOException e)
+        {
             System.out.println("Error reading from file: " + e);
             System.out.println("Returning null");
             result = null;
@@ -263,13 +270,15 @@ public class FootballRanker {
         return result;
     }
 
-
-    private TreeSet<AllPathsInfo> rankByScoreAdjustWinPercentage(Set<AllPathsInfo> paths) {
+    private TreeSet<AllPathsInfo> rankByScoreAdjustWinPercentage(Set<AllPathsInfo> paths)
+    {
 
         TreeSet<AllPathsInfo> result = new TreeSet<AllPathsInfo>(new AveCostComparator());
-        for(AllPathsInfo teamPaths : paths) {
+        for (AllPathsInfo teamPaths : paths)
+        {
             FootballRecord team = records.get(teamPaths.getName());
-            if(team.getWins() > MIN_WINS && teamPaths.getNumPaths() > MIN_TRANSITIVE_WINS) {
+            if (team.getWins() > MIN_WINS && teamPaths.getNumPaths() > MIN_TRANSITIVE_WINS)
+            {
                 double winPercent = team.winPercent();
                 AllPathsInfo copy = AllPathsInfo.makeCopy(teamPaths);
                 copy.adjustAveCost(1.0 / winPercent);
@@ -279,13 +288,15 @@ public class FootballRanker {
         return result;
     }
 
-
-    private TreeSet<AllPathsInfo> rankByScore(Set<AllPathsInfo> paths) {
+    private TreeSet<AllPathsInfo> rankByScore(Set<AllPathsInfo> paths)
+    {
 
         TreeSet<AllPathsInfo> result = new TreeSet<AllPathsInfo>(new AveCostComparator());
-        for(AllPathsInfo teamPaths : paths) {
+        for (AllPathsInfo teamPaths : paths)
+        {
             FootballRecord team = records.get(teamPaths.getName());
-            if(team.getWins() > MIN_WINS && teamPaths.getNumPaths() > MIN_TRANSITIVE_WINS) {
+            if (team.getWins() > MIN_WINS && teamPaths.getNumPaths() > MIN_TRANSITIVE_WINS)
+            {
                 boolean added = result.add(teamPaths);
                 assert added : "Shoudl have added this team. " + teamPaths;
             }
@@ -293,27 +304,31 @@ public class FootballRanker {
         return result;
     }
 
-    private Graph buildGraph(String gameResults) {
+    private Graph buildGraph(String gameResults)
+    {
         Graph g = new Graph();
-        try {
+        try
+        {
             Scanner sc = new Scanner(new File(gameResults));
-            while(sc.hasNext()) {
+            while (sc.hasNext())
+            {
                 String temp = sc.nextLine();
                 String[] line = temp.trim().split(",");
                 int scoreDiff = Integer.parseInt(line[HOME_SCORE]) - Integer.parseInt(line[AWAY_SCORE]);
-                if(scoreDiff != 0) {
+                if (scoreDiff != 0)
+                {
                     addTeam(records, line[1]);
                     addTeam(records, line[3]);
                     addEdge(g, line, records, scoreDiff);
-                }
-                else {
+                } else
+                {
                     //prints out ties
                     //System.out.println(Arrays.toString(line));
                 }
             }
             sc.close();
-        }
-        catch(IOException e) {
+        } catch (IOException e)
+        {
             System.out.println("Error reading from file: " + e);
             System.out.println("Returning null");
             g = null;
@@ -321,44 +336,46 @@ public class FootballRanker {
         return g;
     }
 
-
-    private void addEdge(Graph g, String[] data, Map<String, FootballRecord> records, int scoreDiff) {
+    private void addEdge(Graph g, String[] data, Map<String, FootballRecord> records, int scoreDiff)
+    {
         int scoresWonBy = (scoreDiff / TD_PLUS);
-        if(scoresWonBy == 0)
+        if (scoresWonBy == 0)
             scoresWonBy = 1;
         double cost = Math.abs(1.0 / scoresWonBy);
 
-        if(scoreDiff > 0) {
+        if (scoreDiff > 0)
+        {
             g.addEdge(data[HOME_TEAM], data[AWAY_TEAM], cost);
             records.get(data[HOME_TEAM]).win();
             records.get(data[AWAY_TEAM]).lose();
-        }
-        else {
-            g.addEdge(data[3], data[HOME_TEAM], cost);
+        } else
+        {
+            g.addEdge(data[AWAY_TEAM], data[HOME_TEAM], cost);
             records.get(data[AWAY_TEAM]).win();
             records.get(data[HOME_TEAM]).lose();
         }
     }
 
-
-    private void addTeam(Map<String, FootballRecord> records, String name) {
-        if(!records.containsKey(name))
+    private void addTeam(Map<String, FootballRecord> records, String name)
+    {
+        if (!records.containsKey(name))
             records.put(name, new FootballRecord(name));
     }
 
+    private static class AveCostComparator implements Comparator<AllPathsInfo>
+    {
 
-    private static class AveCostComparator implements Comparator<AllPathsInfo>{
-
-        public int compare(AllPathsInfo a, AllPathsInfo b) {
+        public int compare(AllPathsInfo a, AllPathsInfo b)
+        {
             int result = (a.getAveCost() < b.getAveCost()) ? -1 : (a.getAveCost() == b.getAveCost()) ? 0 : 1;
-            if(result == 0)
+            if (result == 0)
                 result = a.getName().compareTo(b.getName());
             return result;
         }
     }
 
-    public void showAll() {
+    public void showAll()
+    {
         teamsAndResults.showAll();
     }
 }
-
